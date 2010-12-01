@@ -5,6 +5,7 @@
 ## Author: Nicholas Hakobian
 ## Dependencies: szCommon
 ## LoadWith: szCommon
+## OptionalDeps: Omen Recount
 
 szUI.lua
 
