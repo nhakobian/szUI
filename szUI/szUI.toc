@@ -4,7 +4,7 @@
 ## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
 ## Author: Nicholas Hakobian
 ## Dependencies: szCommon
-## LoadWith: szActionBars szMultiTooltips szUnitFrames
+## LoadWith: szCommon
 
 szUI.lua
 
