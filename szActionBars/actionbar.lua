@@ -84,19 +84,6 @@ do
 	uiManagedFrames = nil
 end
 
---[[local ablogon = CreateFrame("Frame")
-ablogon:RegisterEvent("PLAYER_ENTERING_WORLD")
-ablogon:SetScript("OnEvent", function(self, event)
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")	
-	SetCVar("alwaysShowActionBars", 0)	
-	SetActionBarToggles(1, 1, 1, 1, 0)
-	SHOW_MULTI_ACTIONBAR_1 = 1
-	SHOW_MULTI_ACTIONBAR_2 = 1
-	SHOW_MULTI_ACTIONBAR_3 = 1
-	SHOW_MULTI_ACTIONBAR_4 = 1
-	MultiActionBar_Update()
-end)]]--
-
 --function pUI:MakeABCube
 --Defines an actionbar "cube" of any shape, up to the size of an action bar: 12
 --
@@ -170,13 +157,12 @@ function MakeBkgWindow(frame)
 	bkg.bg:SetTexture(.0, .0, .0, alpha)
 	bkg.bg:SetPoint("TOPLEFT", bkg, 3, -3)
 	bkg.bg:SetPoint("BOTTOMRIGHT", bkg, "BOTTOMRIGHT", -3, 3)
-	bkg:SetBackdrop({bgFile=""})--, edgeFile="Interface/Tooltips/UI-Tooltip-Border", edgeSize=16})
-	--bkg:SetBackdropBorderColor(.5, 0, 0, 1)
+	bkg:SetBackdrop({bgFile=""})
 	CreateBorder(bkg, 14, .5, 0, 0)
 end
 
-MakeBkgWindow(pUI_InfoDock)
-MakeBkgWindow(pUI_ChatDock)
+--MakeBkgWindow(pUI_InfoDock)
+--MakeBkgWindow(pUI_ChatDock)
 
 
 

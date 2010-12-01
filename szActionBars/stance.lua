@@ -1,12 +1,11 @@
-local iconsize = 32
-local padding = 0
+local settings = szUI.actionbars
 
 -- create the shapeshift bar if we enabled it
 local bar = CreateFrame("Frame", "pUI_StanceBar", pUI_ActionBarBg, "SecureHandlerStateTemplate")
-bar:ClearAllPoints()
-bar:SetPoint("BOTTOMLEFT", pUI_BLeftFrame, "TOPLEFT", 0, 0)
-bar:SetWidth(NUM_SHAPESHIFT_SLOTS * iconsize + (NUM_SHAPESHIFT_SLOTS-1) *padding)
-bar:SetHeight(iconsize)
+pUI_StanceBar:ClearAllPoints()
+pUI_StanceBar:SetPoint("BOTTOMLEFT", pUI_BLeftFrame, "TOPLEFT", 0, 0)
+pUI_StanceBar:SetWidth(NUM_SHAPESHIFT_SLOTS * settings.iconsize + (NUM_SHAPESHIFT_SLOTS-1) *settings.padding)
+pUI_StanceBar:SetHeight(settings.iconsize)
 
 --MakeBkgWindow(bar)
 
@@ -41,12 +40,11 @@ function style(self)
 
 	HotKey:ClearAllPoints()
 	HotKey:SetPoint("TOPRIGHT", Button, "TOPRIGHT", 1, -3)
-	
-	--normal:SetSize(55,56)
+
 	normal:ClearAllPoints()
 	normal:SetPoint("TOPLEFT", 0, 0)
 	normal:SetPoint("BOTTOMRIGHT")
-	--normal:SetTexCoord(.16, .82, .16, .82)
+
 	normal:SetBlendMode("ADD")
 	normal:SetDrawLayer("BACKGROUND")
 end
@@ -96,14 +94,14 @@ function ShiftBarUpdate()
 	end
 end
 
-bar:RegisterEvent("PLAYER_LOGIN")
-bar:RegisterEvent("PLAYER_ENTERING_WORLD")
-bar:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
-bar:RegisterEvent("UPDATE_SHAPESHIFT_USABLE")
-bar:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
-bar:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-bar:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
-bar:SetScript("OnEvent", function(self, event, ...)
+pUI_StanceBar:RegisterEvent("PLAYER_LOGIN")
+pUI_StanceBar:RegisterEvent("PLAYER_ENTERING_WORLD")
+pUI_StanceBar:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
+pUI_StanceBar:RegisterEvent("UPDATE_SHAPESHIFT_USABLE")
+pUI_StanceBar:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN")
+pUI_StanceBar:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+pUI_StanceBar:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
+pUI_StanceBar:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_LOGIN" then
 		local button
 		local lasticon = 0
@@ -111,12 +109,12 @@ bar:SetScript("OnEvent", function(self, event, ...)
 			button = _G["ShapeshiftButton"..i]
 			button:ClearAllPoints()
 			button:SetParent(self)
-			button:SetSize(iconsize, iconsize)
+			button:SetSize(settings.iconsize, settings.iconsize)
 			if i == 1 then
 				button:SetPoint("BOTTOMLEFT", 0, 0)
 			else
 				local previous = _G["ShapeshiftButton"..i-1]
-				button:SetPoint("LEFT", previous, "RIGHT", padding, 0)
+				button:SetPoint("LEFT", previous, "RIGHT", settings.padding, 0)
 			end
 			local _, name = GetShapeshiftFormInfo(i)
 			
@@ -126,7 +124,7 @@ bar:SetScript("OnEvent", function(self, event, ...)
 			end
 		end
 		
-		bar:SetWidth(lasticon*iconsize + (lasticon-1) * padding)
+		bar:SetWidth(lasticon*settings.iconsize + (lasticon-1) * settings.padding)
 		
 		local _, class = UnitClass('player')
 		RegisterStateDriver(self, "visibility", States[class] or "hide")
@@ -150,9 +148,11 @@ bar:SetScript("OnEvent", function(self, event, ...)
 		local _, class = UnitClass('player')
 		if class ~= "SHAMAN" then
 			if lasticon ~= 0 then
-				pUI_BLeftFrame.bkg:SetBkgPoints(bar)
+				print("shifting")
+				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_StanceBar)
 			else
-				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_LeftFrame)
+				print("notshifting")
+				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_BLeftFrame)
 			end
 		end
 		

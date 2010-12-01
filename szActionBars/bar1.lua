@@ -1,17 +1,18 @@
-local iconsize = 32
-local padding = 0
+local settings = szUI.actionbars
+
+pUI_ActionBarAnchor = CreateFrame("FRAME", "pUI_ActionBarAnchor", UIParent, "SecureHandlerStateTemplate")
+pUI_ActionBarAnchor:SetPoint("BOTTOM", UIParent, 0, 0.25*42)
+
+pUI_ActionBarBg = CreateFrame("FRAME", "pUI_ActionBarBg", pUI_ActionBarAnchor, "SecureHandlerStateTemplate")
+pUI_ActionBarBg:SetFrameStrata("MEDIUM")
+
+MakeBkgWindow(pUI_ActionBarBg)
 
 frame = CreateFrame("FRAME", "pUI_ActionBar1", pUI_ActionBarBg, "SecureHandlerStateTemplate")
 frame:SetPoint("BOTTOM", pUI_ActionBarAnchor, "BOTTOM", 0, 0)
-frame:SetWidth(iconsize*12 + padding*11)
-frame:SetHeight(iconsize)
+frame:SetWidth(settings.iconsize*12 + settings.padding*11)
+frame:SetHeight(settings.iconsize)
 frame:Show()
-
---pUI_ActionBarBg:SetPoint("TOPLEFT", pUI_BRightFrame)--, -1, 1)
---pUI_ActionBarBg:SetPoint("BOTTOMRIGHT", pUI_ActionBar1)--, 1, -1)
-
-
-MakeBkgWindow(pUI_ActionBarBg)
 
 for i = 1, 12 do
 	button = _G["ActionButton"..i]
@@ -19,13 +20,13 @@ for i = 1, 12 do
 	border = _G["ActionButton"..i.."Border"]
 	button:ClearAllPoints()
 	button:SetParent(frame)
-	button:SetSize(iconsize, iconsize)
+	button:SetSize(settings.iconsize, settings.iconsize)
 			
 	if i == 1 then
 		button:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT")
 	else
 		local p = _G["ActionButton"..i-1]
-		button:SetPoint("LEFT", p, "RIGHT", padding, 0)
+		button:SetPoint("LEFT", p, "RIGHT", settings.padding, 0)
 	end
 end	
 
@@ -93,13 +94,11 @@ local function pUI_ActionBarEvent(self, event, ...)
 		--Allow pUI_ActionBarBg to expand during combat.
 		pUI_ActionBarBg:SetFrameRef("pUI_BRightFrame", pUI_BRightFrame)
 		pUI_ActionBarBg:SetFrameRef("pUI_PetBar", pUI_PetBar)
-		pUI_ActionBarBg:SetFrameRef("pUI_TotemBar", pUI_TotemBar)
 		pUI_ActionBarBg:SetFrameRef("pUI_ActionBar1", pUI_ActionBar1)
 		
 		pUI_ActionBarBg:Execute([[
 			pUI_BRightFrame = self:GetFrameRef("pUI_BRightFrame")
 			pUI_PetBar = self:GetFrameRef("pUI_PetBar")
-			pUI_TotemBar = self:GetFrameRef("pUI_TotemBar")	
 			pUI_ActionBar1 = self:GetFrameRef("pUI_ActionBar1")
 		]])
 		

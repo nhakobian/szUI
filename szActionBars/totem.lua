@@ -1,12 +1,17 @@
+local settings = szUI.actionbars
+
+if select(2, UnitClass("player")) ~= "SHAMAN" then return end
+
+local function dummy() end
+
 local pUI_TotemBar = CreateFrame("FRAME", "pUI_TotemBar", UIParent, "SecureHandlerStateTemplate")
 
 pUI_TotemBar:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_LOGIN" then
-		self:SetWidth(32*6)--MultiCastActionBarFrame:GetWidth())
-		self:SetHeight(32)
+		self:SetWidth(settings.iconsize*6)
+		self:SetHeight(settings.iconsize)
 		self:ClearAllPoints()
 		self:SetPoint("BOTTOMLEFT", pUI_BLeftFrame, "TOPLEFT", -2, 0)
-		--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		MultiCastSlotButton1:ClearAllPoints()
 		MultiCastSlotButton1:SetPoint("Left", MultiCastSummonSpellButton, "Right", 2,0)
 		MultiCastSlotButton2:ClearAllPoints()
@@ -29,17 +34,6 @@ pUI_TotemBar:SetScript("OnEvent", function(self, event, ...)
 end)
 pUI_TotemBar:RegisterEvent("PLAYER_ENTERING_WORLD")
 pUI_TotemBar:RegisterEvent("PLAYER_LOGIN")
-
---[[hooksecurefunc("MultiCastRecallSpellButton_Update", function(self)
--- anchor to the last shown slot
-		local activeSlots = MultiCastActionBarFrame.numActiveSlots;
-		if ( activeSlots > 0 ) then
-			self:ClearAllPoints()
-			self:SetPoint("LEFT", _G["MultiCastSlotButton"..activeSlots], "RIGHT", 80, 0);
-			print("BOOOOOB")
-		end
-		
-end)]]--
 
 hooksecurefunc("MultiCastActionButton_Update",function(actionbutton) 
 	if not InCombatLockdown() then 
@@ -64,8 +58,7 @@ MultiCastActionBarFrame:SetScript("OnHide", nil)
 MultiCastActionBarFrame:ClearAllPoints()
 MultiCastActionBarFrame:SetPoint("BOTTOMLEFT", pUI_TotemBar)
 
-local function dummy()
-end
+
 MultiCastActionBarFrame.SetParent = dummy
 MultiCastActionBarFrame.SetPoint = dummy
 --MultiCastRecallSpellButton.SetPoint = dummy -- bug fix, see http://www.tukui.org/v2/forums/topic.php?id=2405
