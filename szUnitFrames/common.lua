@@ -1,5 +1,7 @@
 local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf"
 
+szCommon:EventDebug("szUnitFrames")
+
 szUnitFrames = CreateFrame("FRAME")
 
 function pfix(pos)
@@ -310,21 +312,3 @@ function szUnitFrames.PartyTargets(self, unit)
 	return self
 end
 oUF:RegisterStyle('szGroupTargets', szUnitFrames.PartyTargets)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
