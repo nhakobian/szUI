@@ -1,5 +1,8 @@
-szUI = {
-	unitframes = {
+if szUI == nil then
+	szUI = {}
+end
+
+szUI.unitframes = {
 		general = {
 			border_size = 14,
 			inset = 3		
@@ -36,14 +39,15 @@ szUI = {
 			width = 105,
 			height = 32
 		}
-	},
-	castbar = {
+	}
+
+szUI.castbar = {
 		iconsize = 22,
 		fontsize = 14,
 		inset = 3,
 		target_width = 350
 	}
-}
+
 
 -- paradoxUI 0.01 alpha
 
@@ -788,7 +792,6 @@ local aStyle = function(self, unit)
 		resting:SetPoint("TOPLEFT", self, -6, 6)
 		resting:SetSize(16, 16)
 		restingframe:SetFrameLevel(self:GetFrameLevel()+1)
-		print(resting:GetParent():GetName())
 		self.Resting = resting
 	end
 	
