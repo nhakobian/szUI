@@ -1,3 +1,48 @@
+szUI = {
+	unitframes = {
+		general = {
+			border_size = 14,
+			inset = 3		
+		},
+		player = {
+			x  = 336,
+			y  = 210,
+			width = 252,
+			height = 63,
+			PortraitFrame = true,
+			VehicleSwitch = true
+		},
+		target = {
+			width = 252,
+			height = 63,
+			PortraitFrame = true,
+			PortraitLeft = true
+		},
+		targettarget = {
+			width = 158,
+			height = 42
+		},
+		pet = {
+			width = 158,
+			height = 42
+		},
+		focus = {
+			width = 210,
+			height = 52
+		},
+		focustarget = {
+			width = 105,
+			height = 32
+		}
+	},
+	castbar = {
+		iconsize = 22,
+		fontsize = 14,
+		inset = 3,
+		target_width = 350
+	}
+}
+
 -- paradoxUI 0.01 alpha
 
 --SetCVar("uiScale", 768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))
@@ -48,7 +93,7 @@ local border = "Interface\\AddOns\\paradoxUI\\media\\border"
 local spark_texture = "Interface\\AddOns\\paradoxUI\\media\\spark"
 local white_square = "Interface\\AddOns\\paradoxUI\\media\\white"
 
-local font = "Interface\\AddOns\\paradoxUI\\media\\expressway.ttf" --font = "Fonts/ARIALN.TTF"
+local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf" --font = "Fonts/ARIALN.TTF"
 
 -- Fontstring Function
 local createFontstring = function(fr, font, size, outline)
@@ -400,10 +445,18 @@ end
 --------ENDFROMTUKUI
 
 local aStyle = function(self, unit)
+	
+	local settings = szUI.unitframes[unit]
+	local inset = szUI.unitframes.general.inset
+
 	local _, class = UnitClass(unit)
 
-	local inset = 3
-	
+	local hbar_texture = self:CreateTexture(nil)
+	hbar_texture:SetTexture(.6,.6,.6,1)
+
+	local pbar_texture = self:CreateTexture(nil)
+	pbar_texture:SetTexture(.6,.6,.6,1)
+
 	self.unit = unit
 	self.menu = SpawnMenu
 	self:SetScript("OnEnter", OnEnter)
@@ -413,25 +466,25 @@ local aStyle = function(self, unit)
 	self:SetBackdropColor(0, 0, 0, 1)
 	self:SetBackdropBorderColor(0, 1, 0, 1)
 
-	CreateBorder(self,14, .3, .3, .3)
+	CreateBorder(self, szUI.unitframes.general.border_size, .3, .3, .3)
 	
 	-- HP Bar
 	self.Health = CreateFrame("StatusBar", nil, self)
-	self.Health:SetStatusBarTexture(fill_texture)
+	self.Health:SetStatusBarTexture(hbar_texture)
 	self.Health.frequentUpdates = true
 	self.Health.bg = self.Health:CreateTexture(nil, "BORDER")
 	self.Health.bg:SetAllPoints(self.Health)
 	self.Health.bg:SetAlpha(0.2)
-	self.Health.bg:SetTexture(fill_texture)
+	self.Health.bg:SetTexture(1,1,1,1)
 	self.Health:SetFrameLevel(self:GetFrameLevel())
 	
 	-- Power Bar
 	self.Power = CreateFrame("StatusBar", nil, self)
-	self.Power:SetStatusBarTexture(fill_texture)
+	self.Power:SetStatusBarTexture(pbar_texture)
     self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -1)
 	self.Power.bg = self.Power:CreateTexture(nil, "BORDER")
 	self.Power.bg:SetAllPoints(self.Power)
-	self.Power.bg:SetTexture(bg_texture)
+	self.Power.bg:SetTexture(1,1,1,1)
 	self.Power.bg:SetAlpha(0.20)
 	self.Power:SetFrameLevel(self:GetFrameLevel())		
 	
@@ -461,39 +514,24 @@ local aStyle = function(self, unit)
 	local portrait_offset = 0
 	local portrait_left = true
 
-	if (unit == "player") then
-		self:SetSize(scale(6*42), scale(1.5*42))
-		PortraitFrame = true
-		self.VehicleSwitch = true
+	self:SetSize(settings.width, settings.height)
+	if settings.PortraitFrame then
+		PortraitFrame = settings.PortraitFrame
 	end
-
-	if (unit == "target") then
-		self:SetSize(scale(6*42), scale(1.5*42))
-		PortraitFrame = true
-		portrait_left = false
+	if settings.VehicleSwitch then
+		self.VehicleSwitch = settings.VehicleSwitch
 	end
-
-	if (unit == "targettarget") then
-		self:SetSize(scale(3.75*42), scale(1*42))
+	if settings.PortraitLeft then
+		portrait_left = settings.PortraitLeft
 	end
 	
 	if (unit == "pet") then
-		self:SetSize(scale(3.75*42), scale(1*42))
 		self:RegisterEvent("UNIT_PET", function(self, unit, ...)
 			if self.Name then self.Name:UpdateTag(self.unit) end
 		end)
 		self:RegisterEvent("PLAYER_ALIVE", function(self, unit, ...)
 			if self.Name then self.Name:UpdateTag(self.unit) end
 		end)
-	end
-
-	if (unit == "focus") then
-		self:SetSize(scale(5*42), scale(1.25*42)-.5)
-		PortraitFrame = true
-	end
-
-	if (unit == "focustarget") then
-		self:SetSize(scale(2.5*42), scale(0.75*42))
 	end
 
 	if (portrait_left == true) then
@@ -587,15 +625,16 @@ local aStyle = function(self, unit)
 	--Castbar
 	if unit == "player" or unit == "target" or unit == "focus" then
 		-- castbar of player and target
+		local iconsize = szUI.castbar.iconsize
+		local fontsize = szUI.castbar.fontsize
+		local borderpad = szUI.castbar.inset
+
 		local castbar = CreateFrame("StatusBar", self:GetName().."_Castbar", self)
 		local texture = castbar:CreateTexture(nil, "ARTWORK")
 		texture:SetTexture(1, 1, 1, 1)
 		castbar:SetStatusBarTexture(texture)
 		castbar:SetStatusBarColor(.6,.4,0,1)
-		
-		local iconsize = 26
-		local fontsize = 14
-		local borderpad = 3
+
 		if unit == "focus" then 
 			iconsize = iconsize/2.0 
 			fontsize = fontsize - 4
@@ -604,12 +643,12 @@ local aStyle = function(self, unit)
 		castbar.frequentUpdates = true
 		castbar.bg = castbar:CreateTexture(nil, "BORDER")
 		if unit == "target" then
-			castbar.bg:SetPoint("TOPLEFT", castbar, -1, 1)
-			castbar.bg:SetPoint("BOTTOMRIGHT", castbar, iconsize, -1)
+			castbar.bg:SetPoint("TOPLEFT", castbar, 0, 0)
+			castbar.bg:SetPoint("BOTTOMRIGHT", castbar, iconsize, 0)
 			CreateBorder(castbar, 12, .3,.3, .3, borderpad, borderpad, borderpad+iconsize, borderpad, borderpad, borderpad, borderpad+iconsize, borderpad)			
 		else
-			castbar.bg:SetPoint("TOPLEFT", castbar, -iconsize, 1)
-			castbar.bg:SetPoint("BOTTOMRIGHT", castbar, 1, -1)
+			castbar.bg:SetPoint("TOPLEFT", castbar, -iconsize, 0)
+			castbar.bg:SetPoint("BOTTOMRIGHT", castbar, 0, 0)
 			CreateBorder(castbar, 12, .3,.3, .3, iconsize+borderpad, borderpad, borderpad, borderpad, iconsize+borderpad, borderpad, borderpad, borderpad)
 		end
 		castbar.bg:SetTexture(0,0,0,1)
@@ -634,16 +673,16 @@ local aStyle = function(self, unit)
 			
 		if unit == "target" then
 			castbar:SetPoint("BOTTOM", UIParent, "BOTTOM", -(castbar.button:GetWidth()/2.0), 7*42)
-			castbar:SetHeight(iconsize - 2)
-			castbar:SetWidth(10*42)
+			castbar:SetHeight(iconsize - borderpad)
+			castbar:SetWidth(szUI.castbar.target_width)
 		elseif unit == "player" then
-			castbar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", iconsize-1, 2+2)
-			castbar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 1-1, 2+2)
-			castbar:SetHeight(iconsize - 2)
+			castbar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", iconsize+borderpad, 8)
+			castbar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -borderpad, 8)
+			castbar:SetHeight(iconsize-borderpad)
 		elseif unit == "focus" then
-			castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", iconsize-1, -2-2)
-			castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -2-2)
-			castbar:SetHeight(iconsize - 2)				
+			castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", iconsize+borderpad, -4)
+			castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", -borderpad, -4)
+			castbar:SetHeight(iconsize - borderpad)				
 		end
 			
 		castbar.CustomTimeText = function(self, duration)
@@ -692,6 +731,7 @@ local aStyle = function(self, unit)
 		castbar.Spark = castbar:CreateTexture()
 		castbar.Spark:SetTexCoord(0, 1, 0.1, 0.9)
 		castbar.Spark:SetBlendMode("ADD")
+		castbar.Spark:SetHeight(castbar:GetHeight()*2)
 		castbar.Shield = castbar:CreateTexture()
 		self.Castbar = castbar		
 	end
@@ -795,7 +835,7 @@ end
 oUF:RegisterStyle('paradox', aStyle)
 oUF:Factory(function(self)
 	self:SetActiveStyle('paradox')
-	self:Spawn('player'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", scale(8*42), scale(5*42))
+	self:Spawn('player'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", szUI.unitframes.player.x, szUI.unitframes.player.y)
 	self:Spawn('target'):SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", scale(-8*42), scale(5*42))
 	self:Spawn('targettarget'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMRIGHT", -14*42, 3.75*42-.5)
 	self:Spawn('focus'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0.5*42, 7*42)

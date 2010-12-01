@@ -1,4 +1,4 @@
-local font = "Interface\\AddOns\\paradoxUI\\media\\expressway.ttf"
+local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf"
 
 szUnitFrames = CreateFrame("FRAME")
 
