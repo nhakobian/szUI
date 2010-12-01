@@ -98,12 +98,6 @@ function szUnitFrames.PostUpdateHP(health, unit, min, max)
 		elseif(dead) then
 			text:SetText("dead")
 		end
---	else
---		if min ~= max then
---			text:SetText("-"..max-min)
---		else
---			health:GetParent().Name:UpdateTag()
---		end
 	end
 end
 
@@ -112,18 +106,20 @@ function szUnitFrames.UpdateThreat(self, event, unit)
 	if (self.unit ~= unit) or (unit == "target" or unit == "pet" or unit == "focus" or unit == "focustarget" or unit == "targettarget") then return end
 	local threat = UnitThreatSituation(self.unit)
 	if (threat == 3) then
-			--self:SetBackdropBorderColor(1,0,0)
 			ColorBorder(self, 1, 0, 0)
 	else
-			--self:SetBackdropBorderColor(0,0,0)
 			ColorBorder(self, .3, .3, .3)
 	end 
 end
 
 function szUnitFrames.LargeButtonStyle(self, unit)
-	local frameinset = 2
-		
-	
+	local frameinset = 3
+
+	local hbar_texture = self:CreateTexture(nil)
+	hbar_texture:SetTexture(.6,.6,.6,1)
+
+	local pbar_texture = self:CreateTexture(nil)
+	pbar_texture:SetTexture(.6,.6,.6,1)	
 	
 	self:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 	self:SetScript('OnEnter', UnitFrame_OnEnter)
@@ -140,14 +136,14 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	local health = CreateFrame('StatusBar', nil, self)
 	
 	CreateBorder(self, 14, .3, .3, .3)
-	health:SetStatusBarTexture("Interface\\AddOns\\paradoxUI\\media\\Flat")
+	health:SetStatusBarTexture(hbar_texture)
 	self.Health = health
 	self.Health:SetFrameLevel(self:GetFrameLevel())
 
 	health.bg = self.Health:CreateTexture(nil, 'BORDER')
 	health.bg:SetAllPoints(self.Health)
-	health.bg:SetTexture("Interface\\AddOns\\paradoxUI\\media\\Flat")
-	health.bg:SetAlpha(0.2)
+	health.bg:SetTexture(1,1,1,1)
+	health.bg:SetAlpha(0.1)
 	health.bg:SetVertexColor(0,0,0)
 	self.Health.bg = health.bg
 
@@ -162,7 +158,7 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	power:SetHeight(5)
 	power:SetPoint("BOTTOMLEFT", frameinset, frameinset)
 	power:SetPoint("BOTTOMRIGHT", -frameinset, frameinset)
-	power:SetStatusBarTexture("Interface\\AddOns\\paradoxUI\\media\\Flat")
+	power:SetStatusBarTexture(pbar_texture)
 	power:SetFrameLevel(self:GetFrameLevel())
 	self.Power = power
 	
@@ -170,9 +166,8 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 
 	power.bg = self.Power:CreateTexture(nil, "BORDER")
 	power.bg:SetAllPoints(power)
-	power.bg:SetTexture("Interface\\AddOns\\paradoxUI\\media\\Flat")
-	power.bg:SetAlpha(.2)
-	--power.bg.multiplier = 0.4
+	power.bg:SetTexture(1,1,1,1)
+	power.bg:SetAlpha(.1)
 	self.Power.bg = power.bg
 
 	health:SetPoint("TOPLEFT", frameinset, -frameinset)
@@ -182,31 +177,23 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	power.colorPower = true
 		
 	local name = self.Health:CreateFontString(nil, 'OVERLAY')
-	name:SetFont(font, 12, "THINOUTLINE")
-	name:SetPoint("TOPLEFT", self.Health, 2*frameinset, -frameinset)
-	name:SetPoint("TOPRIGHT", self.Health, -frameinset, -frameinset)
-	--name:SetJustifyH("CENTER")
-	--name:SetJustifyV("MIDDLE")
-	--name:SetWidth(self:GetWidth())
-	name:SetHeight(12)
-	--name:SetNonSpaceWrap(0)
+	name:SetFont(font, 10, "THINOUTLINE")
+	name:SetPoint("TOPLEFT", self, frameinset, -2*frameinset)
+	name:SetPoint("TOPRIGHT", self, -frameinset, -2*frameinset)
+	name:SetShadowOffset(1,-1)
+	name:SetHeight(10)
 	name.colorClass = true
 	self:Tag(name, '[sz:ricon][name]')
 	self.Name = name
 	
 	local neghp = health:CreateFontString(nil, "OVERLAY")
-	neghp:SetFont(font, 12, "THINOUTLINE")
-	neghp:SetPoint("BOTTOM", self.Health)
+	neghp:SetFont(font, 10, "THINOUTLINE")
+	neghp:SetPoint("BOTTOM", self.Health, 0, frameinset)
+	neghp:SetShadowOffset(1,-1)
 	self:Tag(neghp, '[->missinghp]')
 	self.HP = neghp
 	
-	RaidIcon = health:CreateTexture(nil, 'OVERLAY')
-	RaidIcon:SetHeight(16)
-	RaidIcon:SetWidth(16)
-	RaidIcon:SetPoint("BOTTOM", self, "TOP", 0, 2)
-	--self.RaidIcon = RaidIcon
-	
-	table.insert(self.__elements, UpdateThreat)
+	table.insert(self.__elements, szUnitFrames.UpdateThreat)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', szUnitFrames.UpdateThreat)
 	self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', szUnitFrames.UpdateThreat)
 	self:RegisterEvent('UNIT_THREAT_SITUATION_UPDATE', szUnitFrames.UpdateThreat)
@@ -229,11 +216,7 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	--picon:SetTexture"Interface\AddOns\Tukui\media\textures\picon"
 	--picon.Override = TukuiDB.Phasing
 	--self.PhaseIcon = picon
-	
 
-
-	health.Smooth = true
-	
 	local range = {insideAlpha = 1, outsideAlpha = .3}
 	self.Range = range
 	
@@ -261,8 +244,7 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	otherheals:SetMinMaxValues(0, 1)
 	
 	self.HealPrediction = { myBar = myheals, otherBar = otherheals, maxOverflow=1.1}
-	
-	
+		
 	local dbh = self:CreateTexture(nil, "OVERLAY")
 	dbh:SetPoint("TOPLEFT", frameinset, -frameinset)
 	dbh:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT", 0, frameinset)
@@ -278,6 +260,9 @@ end
 oUF:RegisterStyle('szGroup', szUnitFrames.LargeButtonStyle)
 
 function szUnitFrames.PartyTargets(self, unit)
+	local hbar_texture = self:CreateTexture(nil)
+	hbar_texture:SetTexture(.6,.6,.6,1)
+
 	self:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 	self:SetScript('OnEnter', UnitFrame_OnEnter)
 	self:SetScript('OnLeave', UnitFrame_OnLeave)
@@ -292,13 +277,12 @@ function szUnitFrames.PartyTargets(self, unit)
 	
 	local health = CreateFrame('StatusBar', nil, self)
 
-	health:SetStatusBarTexture("Interface\\AddOns\\paradoxUI\\media\\Flat")
+	health:SetStatusBarTexture(hbar_texture)
 	health.frequentUpdates = true
 	health.colorDisconnected = true	
 	health.colorClass = true
 	health.colorReaction = true	
 	health.colorClassPet = true
-	
 	health:SetPoint("TOPLEFT", 3, -3)
 	health:SetWidth(self:GetWidth()-6)
 	health:SetPoint("BOTTOMRIGHT", -3, 3)
@@ -308,63 +292,21 @@ function szUnitFrames.PartyTargets(self, unit)
 
 	health.bg = self.Health:CreateTexture(nil, 'BORDER')
 	health.bg:SetAllPoints(self.Health)
-	health.bg:SetTexture("Interface\\AddOns\\paradoxUI\\media\\Flat")
-	health.bg:SetAlpha(0.2)
+	health.bg:SetTexture(1,1,1,1)
+	health.bg:SetAlpha(0.1)
 	self.Health.bg = health.bg
 
-	--health.PostUpdate = TukuiDB.PostUpdatePetColor
-	--health.PostUpdate = szUnitFrames.PostUpdateHP
-	
 	local name = health:CreateFontString(nil, 'OVERLAY')
 	name:SetFont(font, 12, "THINOUTLINE")
-	name:SetPoint("TOPLEFT", self.Health, 6, 0)
+	name:SetPoint("TOPLEFT", self.Health, 3, 0)
 	name:SetPoint("BOTTOMRIGHT", self.Health, -3, 0)
 	name:SetJustifyV("MIDDLE")
 	name:SetJustifyH("CENTER")
+	name:SetShadowOffset(1,-1)
 	name:SetHeight(12)
 	self:Tag(name, '[sz:ricon][name]')
 	self.Name = name
-	
-	--RaidIcon = health:CreateTexture(nil, 'OVERLAY')
-	--RaidIcon:SetHeight(16)
-	--RaidIcon:SetWidth(16)
-	--RaidIcon:SetPoint("BOTTOM", self, "TOP", 0, 2)
-	--self.RaidIcon = RaidIcon
-	
-	--self.DebuffHighlightAlpha = 1
-	--self.DebuffHighlightBackdrop = true
-	--self.DebuffHighlightFilter = true
 
-	--health.Smooth = true
-	
-	--local range = {insideAlpha = 1, outsideAlpha = .3}
-	--self.Range = range
-	
-	--heal prediction
-	local myheals = CreateFrame('StatusBar', self:GetName().."myheals", self.Health)
-	myheals:SetPoint("TOPLEFT", self.Health:GetStatusBarTexture(), "TOPRIGHT", 0, 0)
-	myheals:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "BOTTOMRIGHT", 0, 0)
-	myheals:SetWidth(self.Health:GetWidth())
-	myheals.text = myheals:CreateTexture()
-	myheals.text:SetTexture(1, 1, 1, 1)
-	myheals:SetStatusBarTexture(myheals.text)
-	myheals:SetStatusBarColor(0, .5, 0, .75)
-	myheals.frequentUpdates = true
-	myheals:SetMinMaxValues(0, 1)
-	
-	local otherheals = CreateFrame('StatusBar', nil, self.Health)
-	otherheals:SetPoint("TOPLEFT", self.Health:GetStatusBarTexture(), "TOPRIGHT", 0, 0)
-	otherheals:SetPoint("BOTTOMLEFT", self.Health:GetStatusBarTexture(), "BOTTOMRIGHT", 0, 0)
-	otherheals:SetWidth(self.Health:GetWidth())
-	otherheals.text = otherheals:CreateTexture()
-	otherheals.text:SetTexture(1, 1, 1, 1)
-	otherheals:SetStatusBarTexture(otherheals.text)
-	otherheals:SetStatusBarColor(1, .5, 0, .75)
-	otherheals.frequentUpdates = true
-	otherheals:SetMinMaxValues(0, 1)
-	
-	self.HealPrediction = { myBar = myheals, otherBar = otherheals, maxOverflow=1.1}
-	
 	return self
 end
 oUF:RegisterStyle('szGroupTargets', szUnitFrames.PartyTargets)

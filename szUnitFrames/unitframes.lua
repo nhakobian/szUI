@@ -16,7 +16,7 @@ szUI = {
 			width = 252,
 			height = 63,
 			PortraitFrame = true,
-			PortraitLeft = true
+			PortraitLeft = false
 		},
 		targettarget = {
 			width = 158,
@@ -28,7 +28,9 @@ szUI = {
 		},
 		focus = {
 			width = 210,
-			height = 52
+			height = 52,
+			PortraitFrame = true,
+			PortraitLeft = true
 		},
 		focustarget = {
 			width = 105,
@@ -95,14 +97,6 @@ local white_square = "Interface\\AddOns\\paradoxUI\\media\\white"
 
 local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf" --font = "Fonts/ARIALN.TTF"
 
--- Fontstring Function
-local createFontstring = function(fr, font, size, outline)
-   	local fs = fr:CreateFontString(nil, "OVERLAY")
-   	fs:SetFont(font, size, outline)
-   	fs:SetShadowColor(0,0,0,1)
-   	return fs
-end
-
 -- Shortens Numbers
 function ShortNumber(num)
 	if(num >= 1e6) then
@@ -155,23 +149,23 @@ local PostUpdateHP = function(health, unit, min, max)
 				health.value:SetText(min.."/"..max)
 			elseif(unit == "target" or unit == "pet") then				
 				health.value:SetText(ShortNumber(min).."|r/"..ShortNumber(max).."|r ("..floor(min / max * 100).."%"..")")
-				if unit ~= 'pet' then
-					health.percent:SetText(floor(min / max * 100).."%")
-					health.percent:SetTextColor(r,g,b)
-				end
+				--if unit ~= 'pet' then
+				--	health.percent:SetText(floor(min / max * 100).."%")
+				--	health.percent:SetTextColor(r,g,b)
+				--end
 			elseif(unit == "targettarget" or unit == "focus") then
 				health.value:SetText(floor(min / max * 100).."%")
 			end				
 		elseif (min == max) then
-			if (unit == "player" or unit=='vehicle') then
+			if (unit == "player" or unit=='vehicle' or unit == "focus") then
 				health.value:SetText(max)
 			elseif(unit == "target") then		
 				health.value:SetText(ShortNumber(max))
-				health.percent:SetText()
+				--health.percent:SetText()
 			elseif(unit == 'pet') then
 				health.value:SetText(ShortNumber(max))
-				health.percent:SetText()
-			elseif(unit == "targettarget" or unit == "focus") then
+				--health.percent:SetText()
+			elseif(unit == "targettarget") then
 				health.value:SetText(floor(min / max * 100).."%")
 			end
 		end	
@@ -203,79 +197,32 @@ local PostUpdatePower = function(power, unit, min, max)
 		if(ptype == "MANA") then
 			local r, g, b = oUF.ColorGradient(min / max, unpack(power.bg.smoothGradient or oUF.colors.smooth))
 			if min ~= max then
-				power.value:SetText(smin.."|r/"..smax)
+				power.value:SetText(smin.."|r/"..smax.."("..floor(min / max * 100).."%)")
 			else
 				power.value:SetText(smax)
 			end
-			if (unit ~= "target" and unit ~= 'pet') then
-				power.percent:SetText("("..floor(min / max * 100).."%)")
-				power.percent:SetTextColor(r,g,b)
-			end
+			---if (unit ~= "target" and unit ~= 'pet') then
+			--	power.percent:SetText()
+			--	power.percent:SetTextColor(r,g,b)
+			--end
 		elseif(ptype == "FOCUS" or ptype == "ENERGY") then
 			if min ~= max then
 				power.value:SetText(smin.."/"..smax)
 			else
 				power.value:SetText(smax)
 			end
-			power.percent:SetText()
 		elseif(ptype == "RAGE" or ptype == "RUNIC_POWER") then
 			if min ~= max then
 				power.value:SetText(smin.."/"..smax)
 			else
 				power.value:SetText(smax)
 			end
-			power.percent:SetText()
 		end
 	end
 	
 end
 
--- Generates the Name String
-local createNameString = function (s, font, size, outline, x, y, point, wd)
-	s.Name = createFontstring(s.Health, font, size, outline)
-	s.Name:SetPoint(point, s.Health, x, y)
-	s.Name:SetJustifyH(point)
-	s.Name:SetJustifyV("CENTER")
-	--s.Name:SetWidth(wd)
-	--s.Name:SetHeight(size)
-	s.Name:SetPoint("RIGHT", s.Health.value, "LEFT", -5, 0)
-	s.Name:SetShadowOffset(1,-1)
-	if s.unit == "pet" then
-		s:Tag(s.Name, "[paradox:petname]")
-	else
-		s:Tag(s.Name, "[name]")
-	end
-end
-		
--- Generates the Health Value String
-local createHPString = function (s, font, size, outline, x, y, point)
-	s.Health.value = createFontstring(s.Health, font, size, outline)
-	s.Health.value:SetPoint(point, s.Health, x, y)
-	s.Health.value:SetJustifyH(point)
-	s.Health.value:SetTextColor(1,1,1)
-	s.Health.value:SetShadowOffset(1,-1)
-end
 
--- Generates the Health Percent String	
-local createPercentString = function (s, font, size, outline, x, y, point, align)
-	s.Health.percent = createFontstring(s.Health, font, size, outline)
-	s.Health.percent:SetPoint(align, s, point, x, y)
-	s.Health.percent:SetShadowOffset(1,-1)
-end
-	
--- Generates the Power Value String
-local createPPString = function (s, font, size, outline, x, y, point)
-	s.Power.value = createFontstring(s.Power, font, size, outline)
-	s.Power.value:SetPoint(point, s.Power.percent, "LEFT", x, y)
-	s.Power.value:SetJustifyH(point)
-end
-	
--- Generates the Power Percent String
-local createPercentPPString = function (s, font, size, outline, x, y, point)
-	s.Power.percent = createFontstring(s.Power, font, size, outline)
-	s.Power.percent:SetPoint(point, s.Power, x, y)
-	s.Power.percent:SetJustifyH(point)
-end
 
 -- Right Click Menu
 local SpawnMenu = function(self)
@@ -444,6 +391,61 @@ end
 
 --------ENDFROMTUKUI
 
+
+	-- Fontstring Function
+local makeFontString = function(frame, font, size, ...)
+	local outline, justifyh, justifyv = ...
+	
+   	local fstring = frame:CreateFontString(nil, "OVERLAY")
+	if outline == nil then
+		fstring:SetFont(font, size, "THINOUTLINE")
+	else
+		fstring:SetFont(font, size, outline)
+	end
+   	fstring:SetShadowColor(0,0,0,1)
+	fstring:SetShadowOffset(1,-1)
+	if justifyh == nil then
+		fstring:SetJustifyH("LEFT")
+	else
+		fstring:SetJustifyH(justifyh)
+	end
+	if justifyv == nil then
+		fstring:SetJustifyV("MIDDLE")
+	else
+		fstring:SetJustifyV(justifyv)
+	end
+
+	fstring.OldSetPoint = fstring.SetPoint
+	fstring.SetPoint = function(self, ...)
+		local fpoint, anchorframe, anchorpoint, x, y = ...
+		if y == nil and x~= nil then
+			y = x
+			x = anchorpoint
+			anchorpoint = fpoint
+		end
+		if y == nil and x == nil then
+			x = 0
+			y = 0
+		end
+		if anchorpoint == nil then
+			anchorpoint = fpoint
+		end
+		if anchorframe == nil then
+			anchorframe = self:GetParent()
+		end
+		
+		if fpoint == "RIGHT" or fpoint =="TOPRIGHT" or fpoint=="BOTTOMRIGHT" then
+			self:OldSetPoint(fpoint, anchorframe, anchorpoint, x+size/4.0, y)
+		else
+			self:OldSetPoint(fpoint, anchorframe, anchorpoint, x, y)
+		end
+	
+	end
+
+   	return fstring
+end
+
+
 local aStyle = function(self, unit)
 	
 	local settings = szUI.unitframes[unit]
@@ -464,7 +466,7 @@ local aStyle = function(self, unit)
 	self:RegisterForClicks('AnyDown')
 	self:SetBackdrop({bgFile="Interface/Buttons/WHITE8X8", insets={top=3, bottom=3, left=3, right=3}})
 	self:SetBackdropColor(0, 0, 0, 1)
-	self:SetBackdropBorderColor(0, 1, 0, 1)
+	self:SetBackdropBorderColor(0, 0, 0, 1)
 
 	CreateBorder(self, szUI.unitframes.general.border_size, .3, .3, .3)
 	
@@ -474,7 +476,7 @@ local aStyle = function(self, unit)
 	self.Health.frequentUpdates = true
 	self.Health.bg = self.Health:CreateTexture(nil, "BORDER")
 	self.Health.bg:SetAllPoints(self.Health)
-	self.Health.bg:SetAlpha(0.2)
+	self.Health.bg:SetAlpha(0.1)
 	self.Health.bg:SetTexture(1,1,1,1)
 	self.Health:SetFrameLevel(self:GetFrameLevel())
 	
@@ -485,7 +487,7 @@ local aStyle = function(self, unit)
 	self.Power.bg = self.Power:CreateTexture(nil, "BORDER")
 	self.Power.bg:SetAllPoints(self.Power)
 	self.Power.bg:SetTexture(1,1,1,1)
-	self.Power.bg:SetAlpha(0.20)
+	self.Power.bg:SetAlpha(0.1)
 	self.Power:SetFrameLevel(self:GetFrameLevel())		
 	
 	-- Mouseover Highlight
@@ -515,13 +517,14 @@ local aStyle = function(self, unit)
 	local portrait_left = true
 
 	self:SetSize(settings.width, settings.height)
-	if settings.PortraitFrame then
+	
+	if settings.PortraitFrame ~= nil then
 		PortraitFrame = settings.PortraitFrame
 	end
-	if settings.VehicleSwitch then
+	if settings.VehicleSwitch ~= nil then
 		self.VehicleSwitch = settings.VehicleSwitch
 	end
-	if settings.PortraitLeft then
+	if settings.PortraitLeft ~= nil then
 		portrait_left = settings.PortraitLeft
 	end
 	
@@ -534,12 +537,6 @@ local aStyle = function(self, unit)
 		end)
 	end
 
-	if (portrait_left == true) then
-		self.Health:SetPoint("TOPRIGHT", self, "TOPRIGHT", -inset, -inset)
-	else
-		self.Health:SetPoint("TOPLEFT", self, "TOPLEFT", inset, -inset)
-	end
-
 	if (PortraitFrame == true) then
 		-- Portrait Frame
 		self.Portrait = CreateFrame("PlayerModel", nil, self)
@@ -549,32 +546,54 @@ local aStyle = function(self, unit)
 		self.Portrait:SetHeight(self:GetHeight() - inset)		
 		self.Portrait:SetFrameLevel(self:GetFrameLevel())
 		if (portrait_left == true) then
-			self.Portrait:SetPoint("TOPLEFT")
+			self.Portrait:SetPoint("TOPLEFT", inset, -inset)
+			self.Health:SetPoint("TOPLEFT", self, "TOPLEFT", portrait_offset +inset, -inset)
 		else
-			self.Portrait:SetPoint("TOPRIGHT")
+			self.Portrait:SetPoint("TOPRIGHT", -inset, -inset)
+			self.Health:SetPoint("TOPLEFT", self, "TOPLEFT", inset, -inset)
 		end
+	else
+		self.Health:SetPoint("TOPLEFT", self, "TOPLEFT", inset, -inset)
 	end
 		
 	-- Size
 	self.Health:SetHeight((self:GetHeight()-2*inset)*.75)
-	self.Health:SetWidth(self:GetWidth() - portrait_offset - inset)
+	self.Health:SetWidth(self:GetWidth() - portrait_offset - 2*inset)
 	self.Power:SetHeight((self:GetHeight()-2*inset)*.25 - 1)
-	self.Power:SetWidth(self:GetWidth() - portrait_offset - inset)
+	self.Power:SetWidth(self:GetWidth() - portrait_offset - 2*inset)
 	
 	-- Fontstrings
-	createHPString(self, font, 12, "THINOUTLINE", 0, 0, "RIGHT")
-	createPercentString(self, font, 12, "THINOUTLINE", 6, 0, "RIGHT", "LEFT")
+	
+--local makeFontString = function(frame, font, size, ...)
+--	local outline, justifyh, justifyv = ...
+
 	local fsize = 12
 	if (unit == 'pet') then
 		fsize = 8
 	end
-	createPercentPPString(self, font, fsize-2, "THINOUTLINE", -2, .5, "RIGHT")
-	createPPString(self, font, fsize-2, "THINOUTLINE", 0, 0, "RIGHT")
-	createNameString(self, font, 12, "THINOUTLINE", 3, 0, "LEFT", 150)
+
+	--HP Value String
+	self.Health.value = makeFontString(self.Health, font, fsize)
+	self.Health.value:SetPoint("RIGHT", self.Health, -inset, 0)
+	self.Health.value:SetJustifyH("RIGHT")
+	
+	--Name string
+	self.Name = makeFontString(self.Health, font, fsize)
+	self.Name:SetPoint("LEFT", self.Health, inset, 0)
+	self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", 2*inset, 0)
+	if self.unit == "pet" then
+		self:Tag(self.Name, "[paradox:petname]")
+	else
+		self:Tag(self.Name, "[name]")
+	end
+
+	-- Generates the Power Value String
+	self.Power.value = makeFontString(self.Power, font, fsize-2)
+	self.Power.value:SetPoint("RIGHT", self.Power, -inset, 0)
 	
 	--Print out unit info on player/target
 	if (unit == "player" or unit == "target") then
-		self.Power.info = createFontstring(self.Power, font, fsize-2, "THINOUTLINE")
+		self.Power.info = makeFontString(self.Power, font, fsize-2)
 		self.Power.info:SetPoint("LEFT", self.Power, 2, 0)
 		self.Power.info:SetPoint("RIGHT", self.Power.value, "LEFT", -2, 0)
 		self.Power.info:SetJustifyH("LEFT")

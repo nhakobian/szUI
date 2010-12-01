@@ -9,7 +9,7 @@ oUF:Factory(function(self)
 	
 	local visibility = "custom [@raid26,exists] hide; [@raid6,exists] show;"
 	local initialw = 90
-	local initialh = 35
+	local initialh = 40
 	local padding = 0
 	
 	local group1 = self:SpawnHeader("oUF_szGroup1", nil, visibility,
