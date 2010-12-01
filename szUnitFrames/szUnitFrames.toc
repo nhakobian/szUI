@@ -1,0 +1,12 @@
+## Interface: 40000
+## Title : szUnitFrames
+## Version: 0.1
+## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
+## Author: Nicholas Hakobian
+## Dependencies: oUF oUF_boring_totembar oUF_DebuffHighlight oUF_AuraWatch
+
+unitframes.lua
+common.lua
+party.lua
+raid10-15-25.lua
+raid40.lua
