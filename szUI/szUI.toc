@@ -5,7 +5,7 @@
 ## Author: Nicholas Hakobian
 ## Dependencies: szCommon
 ## LoadWith: szCommon
-## OptionalDeps: Omen Recount
+## OptionalDeps: Omen Recount Blizzard_TimeManager
 
 szUI.lua
 
