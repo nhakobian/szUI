@@ -148,10 +148,8 @@ pUI_StanceBar:SetScript("OnEvent", function(self, event, ...)
 		local _, class = UnitClass('player')
 		if class ~= "SHAMAN" then
 			if lasticon ~= 0 then
-				print("shifting")
 				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_StanceBar)
 			else
-				print("notshifting")
 				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_BLeftFrame)
 			end
 		end
