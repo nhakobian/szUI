@@ -96,7 +96,7 @@ local function Ref_OnHide(self, ...)
 	--End code from FrameXML/ItemRef.xml
 	
 	--Clear the itemref corresponding to this tip
-	pUI_MultiTips.RefFrameTable[self.index] = ""
+	szMultiTips.RefFrameTable[self.index] = ""
 end
 
 local RefHandlers = { 	["OnShow"] = Ref_OnShow,
@@ -109,15 +109,15 @@ local RefHandlers = { 	["OnShow"] = Ref_OnShow,
 						["OnHide"] = Ref_OnHide
 }
 
-local pUI_MultiTips = CreateFrame("FRAME", "pUI_MultiTips", UIParent)
+local szMultiTips = CreateFrame("FRAME", "szMultiTips", UIParent)
 
-pUI_MultiTips.RefFrameTable = { }
+szMultiTips.RefFrameTable = { }
 
-pUI_MultiTips.lastopened = 0
+szMultiTips.lastopened = 0
 
 --Create sets of tip windows (up to MAX_REF_FRAMES worth)
 for i = 1, MAX_REF_FRAMES do
-	local Tip = CreateFrame("GameTooltip", "pUI_MultiTips"..i, pUI_MultiTips, "GameTooltipTemplate")
+	local Tip = CreateFrame("GameTooltip", "szMultiTips"..i, szMultiTips, "GameTooltipTemplate")
 
 	--Create the close button on each frame
 	Tip.CloseButton = CreateFrame("BUTTON", nil, Tip)
@@ -131,7 +131,7 @@ for i = 1, MAX_REF_FRAMES do
 	end)
 	
 	Tip.index = i
-	pUI_MultiTips.RefFrameTable[i] = ""
+	szMultiTips.RefFrameTable[i] = ""
 	
 	--Register Handlers
 	for handler, func in pairs(RefHandlers) do
@@ -141,7 +141,13 @@ for i = 1, MAX_REF_FRAMES do
 	Tip:ClearLines()
 end
 
-function pUI_MultiTips:AddTip(ItemLink)
+function szMultiTips:PrepTip(ItemLink)
+	szMultiTips.preptip = ItemLink
+end
+
+function szMultiTips:AddTip(ItemLink)
+	--local ItemLink = pUI_MultiTips.preptip
+	
 	local notintable = true
 	local firstempty = 0
 	
@@ -149,7 +155,7 @@ function pUI_MultiTips:AddTip(ItemLink)
 	--If it is, clear/close that tooltip.
 	--At the same time, check to see what the first available
 	--empty tip is.
-	for TipNum, Link in pairs(pUI_MultiTips.RefFrameTable) do
+	for TipNum, Link in pairs(szMultiTips.RefFrameTable) do
 		--The Scan for the first empty tooltip
 		if (firstempty == 0) and (Link == "") then
 			firstempty = TipNum
@@ -162,20 +168,20 @@ function pUI_MultiTips:AddTip(ItemLink)
 	
 	--If the link is in the table, close the link and clear its tableref
 	if notintable ~= true then
-		_G["pUI_MultiTips"..notintable]:Hide()
+		_G["szMultiTips"..notintable]:Hide()
 		ItemRefTooltip:Hide()
 	else
 		--If the link isnt in the table and firstempty == 0 (all are open)
 		--Close (lastopened-MAX_REF_FRAMES+1) and open a new tip there
 		if firstempty == 0 then
-			local newtip = pUI_MultiTips.lastopened - MAX_REF_FRAMES + 1
+			local newtip = szMultiTips.lastopened - MAX_REF_FRAMES + 1
 			if newtip < 0 then newtip = newtip + MAX_REF_FRAMES end
-			_G["pUI_MultiTips"..newtip]:Hide()
+			_G["szMultiTips"..newtip]:Hide()
 			firstempty = newtip
 		end
 	
 		--If the link isnt in the table create/show it and add to tableref
-		Tip = _G["pUI_MultiTips"..firstempty]
+		Tip = _G["szMultiTips"..firstempty]
 		Tip:ClearLines()
 		Tip:SetOwner(UIParent, "ANCHOR_NONE")
 		Tip:SetPoint("BOTTOM", UIParent, 0, 80)
@@ -185,8 +191,8 @@ function pUI_MultiTips:AddTip(ItemLink)
 		Tip:EnableMouse(true)
 		Tip:SetMovable(true)
 
-		pUI_MultiTips.RefFrameTable[firstempty] = ItemLink
-		pUI_MultiTips.lastopened = firstempty
+		szMultiTips.RefFrameTable[firstempty] = ItemLink
+		szMultiTips.lastopened = firstempty
 		Tip:SetHyperlink(ItemLink)
 		Tip:SetFrameLevel(6+(firstempty*2))
 		ItemRefTooltip:Hide()
@@ -195,8 +201,14 @@ function pUI_MultiTips:AddTip(ItemLink)
 end
 
 hooksecurefunc(ItemRefTooltip, "SetHyperlink", function(self, link, ...)
-	pUI_MultiTips:AddTip(link)
+	print("Link Added"..link)
+	--error(link,2)
+	szMultiTips:AddTip(link)
 end)
+
+--hooksecurefunc(ItemRefTooltip, "SetOwner", function(self, ...)
+--	pUI_MultiTips:AddTip()
+--end)
 
 local function ItemLink(id)
 	local _, link = GetItemInfo(id)
@@ -223,4 +235,4 @@ function SampleTips()
 
 
 end
---SampleTips()
+SampleTips()
