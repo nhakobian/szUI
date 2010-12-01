@@ -1,3 +1,5 @@
+szCommon:EventDebug("szActionBars")
+
 function style(self)
 	local name = self:GetName()
 	if name:match("MultiCastActionButton") then return end
@@ -163,11 +165,3 @@ end
 
 --MakeBkgWindow(pUI_InfoDock)
 --MakeBkgWindow(pUI_ChatDock)
-
-
-
-
-
-
-
-

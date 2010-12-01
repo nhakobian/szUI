@@ -3,7 +3,7 @@
 ## Version: 0.1
 ## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
 ## Author: Nicholas Hakobian
-## Dependencies: 
+## Dependencies: szCommon
 
 settings.lua
 
