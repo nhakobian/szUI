@@ -13,6 +13,8 @@
 	styling the windows.
 ]]--
 
+szCommon:EventDebug("szMultiTooltips")
+
 local MAX_REF_FRAMES = 10
 
 local function Ref_Style(self, ...)
@@ -235,4 +237,4 @@ function SampleTips()
 
 
 end
-SampleTips()
+--SampleTips()
