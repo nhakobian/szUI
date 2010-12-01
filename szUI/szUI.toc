@@ -4,11 +4,12 @@
 ## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
 ## Author: Nicholas Hakobian
 ## Dependencies: szCommon
+## LoadWith: szActionBars szMultiTooltips szUnitFrames
+
+szUI.lua
 
 font.lua
-
 frames.lua
-
 reloadui.lua
 
 integrate\recount.lua
