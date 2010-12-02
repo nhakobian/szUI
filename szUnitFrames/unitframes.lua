@@ -584,7 +584,7 @@ local aStyle = function(self, unit)
 	--Name string
 	self.Name = makeFontString(self.Health, font, fsize)
 	self.Name:SetPoint("LEFT", self.Health, inset, 0)
-	self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", 2*inset, 0)
+	self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", 0, 0)
 	if self.unit == "pet" then
 		self:Tag(self.Name, "[paradox:petname]")
 	else
