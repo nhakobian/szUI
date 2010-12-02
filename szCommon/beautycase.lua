@@ -36,7 +36,7 @@ local textureNormal = 'Interface\\AddOns\\szCommon\\media\\textureNormal'
 local textureShadow = 'Interface\\AddOns\\szCommon\\media\\textureShadow'
 
 function CreateBorder(self, borderSize, R, G, B, ...)
-    local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom = ...
+    local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom, noTop = ...
     
     if (not self.HasBorder) then
         self.Border = {}
@@ -55,6 +55,14 @@ function CreateBorder(self, borderSize, R, G, B, ...)
 			self.Border[4]:Hide() 
 			bL2 = borderSize
 			bR2 = borderSize
+		end
+
+		if noTop == true then 
+			self.Border[1]:Hide() 
+			self.Border[2]:Hide() 
+			self.Border[5]:Hide() 
+			uL2 = borderSize
+			uR2 = borderSize
 		end
         
         self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
@@ -141,6 +149,12 @@ function CreateBorder(self, borderSize, R, G, B, ...)
 			Shadow[6]:Hide() 
 			Shadow[3]:Hide() 
 			Shadow[4]:Hide() 
+		end
+
+		if noTop == true then 
+			Shadow[1]:Hide() 
+			Shadow[2]:Hide() 
+			Shadow[5]:Hide() 
 		end
 		
         self.HasBorder = true
