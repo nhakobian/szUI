@@ -479,6 +479,7 @@ local aStyle = function(self, unit)
 	local inset = szUI.unitframes.general.inset
 
 	local _, class = UnitClass(unit)
+	self.class = class
 
 	local hbar_texture = self:CreateTexture(nil)
 	hbar_texture:SetTexture(.6,.6,.6,1)
@@ -839,63 +840,50 @@ local aStyle = function(self, unit)
 		self.Resting = resting
 	end
 	
-	--totembar
-	if (unit == 'player') and (class == "SHAMAN") then
-		local TotemBar = CreateFrame("FRAME", nil, self)
-		local padding = 2
-		TotemBar:SetPoint("BOTTOM", oUF_paradoxPlayer, "TOP", 0, 0)
-		TotemBar:SetWidth(self.Health:GetWidth())
-		TotemBar:SetHeight(20)
-		
-		TotemBar.UpdateColors = true
-		TotemBar.AbbreviateNames = true
-		TotemBar.Destroy = true
-		
-		TotemBar.bg = TotemBar:CreateTexture(nil, "BACKGROUND")
-		TotemBar.bg:SetPoint("TOPLEFT", 3, -3)
-		TotemBar.bg:SetPoint("BOTTOMRIGHT", -3, 0)
-		TotemBar.bg:SetTexture(0,0,0, 0.8)
-		CreateBorder(TotemBar, 14, .8, 0, 0,0,0,0,0,0,14,0,14,true)
-		for i= 1, 4 do
-			local totem = CreateFrame("FRAME", nil, TotemBar)
-			if i==1 then
-				totem:SetPoint("LEFT", TotemBar, padding, 0)
-			else
-				totem:SetPoint("LEFT", TotemBar[i-1], "RIGHT", padding, 0)
+	
+	if (unit == 'player') then
+		function self:RecalcStack(self, ...)
+			print("Start RecalcStack")
+			local parent = self:GetParent()
+
+			if parent.Reputation:IsVisible() then
+				parent.Reputation:ClearAllPoints()
+				parent.Reputation:SetPoint("BOTTOM", parent, "TOP")
+				if parent.Experience:IsVisible() or (parent.TotemBar and parent.TotemBar:IsVisible()) then
+					--hide rep top bar
+					print("hide rep top bar")
+				else
+					print("show rep top bar")
+				end
 			end
 			
-			totem:SetWidth((TotemBar:GetWidth()-5*padding)/4.0 )
-			totem:SetHeight(TotemBar:GetHeight() - (2*padding))
-			totem:SetFrameLevel(TotemBar:GetFrameLevel())
+			if parent.Experience:IsVisible() then
+				parent.Experience:ClearAllPoints()
+				if (parent.Reputation:IsVisible()) then
+					parent.Experience:SetPoint("BOTTOM", parent.Reputation, "TOP")
+				else
+					parent.Experience:SetPoint("BOTTOM", parent, "TOP")
+				end
+				if (parent.TotemBar and parent.TotemBar:IsVisible()) then
+					--hide exp top bar
+					print("hide exp top bar")
+				else
+					print("show exp top bar")
+				end
+			end
 			
-			local bar = CreateFrame("StatusBar", nil, totem)
-			bar:SetWidth(totem:GetWidth())
-			bar:SetHeight(totem:GetHeight())
-			bar:SetPoint("CENTER", totem)
-			local texture = bar:CreateTexture(nil)
-			texture:SetTexture(0.6,0.6,0.6)
-			bar:SetStatusBarTexture(texture)
-			totem.StatusBar = bar
-			bar:SetFrameLevel(TotemBar:GetFrameLevel())
-			
-			local text = bar:CreateFontString(nil, "OVERLAY")
-			text:SetPoint("CENTER", bar)
-			text:SetFontObject("GameFontNormal")
-			text:SetTextColor(1,1,1)
-			totem.Text = text
-		
-			totem.bg = totem:CreateTexture(nil, "BACKGROUND")
-			totem.bg:SetAllPoints()
-			totem.bg:SetTexture(1, 1, 1)
-			totem.bg.multiplier = 0
-			
-		
-			TotemBar[i] = totem
+			if (parent.TotemBar and parent.TotemBar:IsVisible()) then
+				parent.TotemBar:ClearAllPoints()
+				if parent.Experience:IsVisible() then
+					parent.TotemBar:SetPoint("TOP", parent.Experience, "BOTTOM")
+				elseif parent.Reputation:IsVisible() then
+					parent.TotemBar:SetPoint("TOP", parent.Reputation, "BOTTOM")
+				else
+					parent.TotemBar:SetPoint("TOP", parent, "BOTTOM")
+				end
+			end
 		end
-	
-		self.TotemBar = TotemBar
 	end
-	
 	
 	--reputation bar
 	if (unit == 'player') then
@@ -962,7 +950,6 @@ local aStyle = function(self, unit)
 		-- Register it with oUF
 		self.Reputation = Reputation
 	end
-		
 	
 	--experience bar
 	if (unit == 'player') then
@@ -973,7 +960,11 @@ local aStyle = function(self, unit)
 		Experience:SetPoint("BOTTOM", self.Reputation, "TOP", 0, 1)
 		Experience:SetHeight(7)
 		Experience:SetWidth(self.Health:GetWidth())
-		CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
+		if class == "SHAMAN" then
+			CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
+		else
+			CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
+		end
 		Experience:SetFrameLevel(self:GetFrameLevel()-1)
 		
 		-- Position and size the Rested background-bar
@@ -1019,7 +1010,7 @@ local aStyle = function(self, unit)
 				self.value:SetAlpha(1)
 			end
 		end)
-	
+
 		-- Add a background
 		local bg = Rested:CreateTexture(nil, 'BACKGROUND')
 		--bg:SetAllPoints(Experience)
@@ -1032,6 +1023,62 @@ local aStyle = function(self, unit)
 		self.Experience.Rested = Rested
 	end
 
+	--totembar
+	if (unit == 'player') and (class == "SHAMAN") then
+		local TotemBar = CreateFrame("FRAME", nil, self)
+		local padding = 2
+		TotemBar:SetPoint("BOTTOM", oUF_paradoxPlayer.Experience, "TOP", 0, 0)
+		TotemBar:SetWidth(self.Health:GetWidth())
+		TotemBar:SetHeight(20)
+		
+		TotemBar.UpdateColors = true
+		TotemBar.AbbreviateNames = true
+		TotemBar.Destroy = true
+		
+		TotemBar.bg = TotemBar:CreateTexture(nil, "BACKGROUND")
+		TotemBar.bg:SetPoint("TOPLEFT", 3, -3)
+		TotemBar.bg:SetPoint("BOTTOMRIGHT", -3, 0)
+		TotemBar.bg:SetTexture(0,0,0, 0.8)
+		CreateBorder(TotemBar, 14, .8, 0, 0,0,0,0,0,0,14,0,14,true)
+		for i= 1, 4 do
+			local totem = CreateFrame("FRAME", nil, TotemBar)
+			if i==1 then
+				totem:SetPoint("LEFT", TotemBar, padding, 0)
+			else
+				totem:SetPoint("LEFT", TotemBar[i-1], "RIGHT", padding, 0)
+			end
+			
+			totem:SetWidth((TotemBar:GetWidth()-5*padding)/4.0 )
+			totem:SetHeight(TotemBar:GetHeight() - (2*padding))
+			totem:SetFrameLevel(TotemBar:GetFrameLevel())
+			
+			local bar = CreateFrame("StatusBar", nil, totem)
+			bar:SetWidth(totem:GetWidth())
+			bar:SetHeight(totem:GetHeight())
+			bar:SetPoint("CENTER", totem)
+			local texture = bar:CreateTexture(nil)
+			texture:SetTexture(0.6,0.6,0.6)
+			bar:SetStatusBarTexture(texture)
+			totem.StatusBar = bar
+			bar:SetFrameLevel(TotemBar:GetFrameLevel())
+			
+			local text = bar:CreateFontString(nil, "OVERLAY")
+			text:SetPoint("CENTER", bar)
+			text:SetFontObject("GameFontNormal")
+			text:SetTextColor(1,1,1)
+			totem.Text = text
+		
+			totem.bg = totem:CreateTexture(nil, "BACKGROUND")
+			totem.bg:SetAllPoints()
+			totem.bg:SetTexture(1, 1, 1)
+			totem.bg.multiplier = 0
+			
+		
+			TotemBar[i] = totem
+		end
+	
+		self.TotemBar = TotemBar
+	end
 end
 
 oUF:RegisterStyle('paradox', aStyle)
