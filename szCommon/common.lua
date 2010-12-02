@@ -20,3 +20,30 @@ function szCommon:EventDebug(addonname)
 end
 
 szCommon:EventDebug("szCommon")
+
+--function MakeBackgroundWindow
+
+function MakeBkgWindow(frame)
+	local alpha = 0.9
+
+	bkg = CreateFrame("FRAME", nil, frame, "SecureHandlerStateTemplate")
+	frame.bkg = bkg
+	
+	bkg:SetFrameStrata("BACKGROUND")
+
+	bkg.reframe = frame
+	bkg.SetBkgPoints = function(self, frame)
+		self:ClearAllPoints()
+		self:SetPoint("TOP", frame, 0, 6)
+		self:SetPoint("LEFT", self.reframe, -6, 0)
+		self:SetPoint("BOTTOMRIGHT", self.reframe, 6, -6)
+	end
+	bkg:SetBkgPoints(frame)
+	
+	bkg.bg = bkg:CreateTexture(nil, "BACKGROUND")
+	bkg.bg:SetTexture(.0, .0, .0, alpha)
+	bkg.bg:SetPoint("TOPLEFT", bkg, 3, -3)
+	bkg.bg:SetPoint("BOTTOMRIGHT", bkg, "BOTTOMRIGHT", -3, 3)
+	bkg:SetBackdrop({bgFile=""})
+	CreateBorder(bkg, 14, .5, 0, 0)
+end
