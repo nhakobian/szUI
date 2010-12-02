@@ -202,14 +202,11 @@ function szMultiTips:AddTip(ItemLink)
 end
 
 hooksecurefunc(ItemRefTooltip, "SetHyperlink", function(self, link, ...)
-	print("Link Added"..link)
-	--error(link,2)
-	szMultiTips:AddTip(link)
+	if ItemRefTooltip:IsVisible() then
+		szMultiTips:AddTip(link)
+	end
 end)
 
---hooksecurefunc(ItemRefTooltip, "SetOwner", function(self, ...)
---	pUI_MultiTips:AddTip()
---end)
 
 local function ItemLink(id)
 	local _, link = GetItemInfo(id)
