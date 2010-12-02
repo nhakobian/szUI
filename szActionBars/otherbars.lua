@@ -22,9 +22,7 @@ pUI_LeftFrame:SetScript("OnEvent", function(self, event, ...)
 		self:UnregisterEvent("PLAYER_LOGIN")
 		self:SetWidth(settings.LeftNX*settings.iconsize + (settings.LeftNX-1)*settings.padding)
 		self:SetHeight(settings.LeftNY*settings.iconsize + (settings.LeftNY-1)*settings.padding)
-		--self:SetPoint("BOTTOMLEFT", pUI_ActionBar1, "BOTTOMRIGHT", (pUI_InfoDock:GetLeft()-pUI_ActionBar1:GetRight()-self:GetWidth())/2.0, 0)
 		self:SetPoint("BOTTOMLEFT", pUI_ActionBar1, "BOTTOMRIGHT", 20, 0)
-		MakeBkgWindow(self)
 
 		MakeABCube(self, "MultiBarLeftButton", settings.LeftNX, settings.LeftNY, "BOTTOMLEFT")
 	end
@@ -35,9 +33,7 @@ pUI_RightFrame:SetScript("OnEvent", function(self, event, ...)
 		self:UnregisterEvent("PLAYER_LOGIN")
 		self:SetWidth(settings.RightNX*settings.iconsize + (settings.RightNX-1)*settings.padding)
 		self:SetHeight(settings.RightNY*settings.iconsize + (settings.RightNY-1)*settings.padding)
-		--self:SetPoint("BOTTOMRIGHT", pUI_InfoDock, "TOPRIGHT", 0, .4*42)
 		self:SetPoint("BOTTOMRIGHT", UIParent, -10, 10)
-		MakeBkgWindow(self)
 		
 		MakeABCube(self, "MultiBarRightButton", settings.RightNX, settings.RightNY, "BOTTOMLEFT")
 	end
@@ -48,10 +44,8 @@ pUI_BLeftFrame:SetScript("OnEvent", function(self, event, ...)
 		self:UnregisterEvent("PLAYER_LOGIN")
 		self:SetWidth(settings.BLeftNX*settings.iconsize + (settings.BLeftNX-1)*settings.padding)
 		self:SetHeight(settings.BLeftNY*settings.iconsize + (settings.BLeftNY-1)*settings.padding)
-		--self:SetPoint("BOTTOMRIGHT", pUI_ActionBar1, "BOTTOMLEFT", -(pUI_ActionBar1:GetLeft()-pUI_ChatDock:GetRight()-self:GetWidth())/2.0, 0)
 		self:SetPoint("BOTTOMRIGHT", pUI_ActionBar1, "BOTTOMLEFT", -20, 0)
 	
-		MakeBkgWindow(self)
 		MakeABCube(self, "MultiBarBottomLeftButton", settings.BLeftNX, settings.BLeftNY, "BOTTOMLEFT", 0, 0)
 	end
 end)

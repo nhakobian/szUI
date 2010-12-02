@@ -144,15 +144,6 @@ pUI_StanceBar:SetScript("OnEvent", function(self, event, ...)
 				button:Hide()
 			end
 		end
-
-		local _, class = UnitClass('player')
-		if class ~= "SHAMAN" then
-			if lasticon ~= 0 then
-				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_StanceBar)
-			else
-				pUI_BLeftFrame.bkg:SetBkgPoints(pUI_BLeftFrame)
-			end
-		end
 		
 		ShiftBarUpdate()
 		ShapeshiftBar_UpdateState()
