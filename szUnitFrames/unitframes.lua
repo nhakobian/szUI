@@ -896,13 +896,81 @@ local aStyle = function(self, unit)
 		self.TotemBar = TotemBar
 	end
 	
+	
+	--reputation bar
+	if (unit == 'player') then
+		-- Position and size
+		local Reputation = CreateFrame('StatusBar', nil, self)
+		Reputation:SetPoint('BOTTOM', self, "TOP", 0, 0)
+		Reputation:SetHeight(7)
+		Reputation:SetWidth(self.Health:GetWidth())
+
+		CreateBorder(Reputation, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true, true)
+		Reputation:SetFrameLevel(self:GetFrameLevel()-1)
+		
+		local texture = Reputation:CreateTexture(nil)
+		texture:SetTexture(.5,.5,.5,1)
+		Reputation:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
+		
+		Reputation.PostUpdate = function(self, unit, min, max)
+			local _, standing = GetWatchedFactionInfo()
+			self:SetStatusBarColor(FACTION_BAR_COLORS[standing].r, FACTION_BAR_COLORS[standing].g, FACTION_BAR_COLORS[standing].b)
+		end
+		
+		Reputation:SetScript("OnEnter", function(self, ...)
+			self.value:SetAlpha(1)
+		end)
+		
+		Reputation:SetScript("OnLeave", function(self, ...)
+			self.value:SetAlpha(0)
+		end)
+		
+		Reputation:SetScript("OnMouseDown", function(self, ...)
+			self.value:SetText(GetWatchedFactionInfo())		
+		end)
+		
+		Reputation:SetScript("OnMouseUp", function(self, ...)
+			self.value:UpdateTag()		
+		end)
+				
+		Reputation:SetScript("OnHide", function(self, ...)
+			--self:SetHeight(1)
+			self:GetParent().Experience:ClearAllPoints()
+			self:GetParent().Experience:SetPoint("BOTTOM", self:GetParent(), "TOP", 0, 0)
+		end)
+
+		Reputation:SetScript("OnShow", function(self, ...)
+			--self:SetHeight(7)
+			self:GetParent().Experience:ClearAllPoints()
+			self:GetParent().Experience:SetPoint("BOTTOM", self, "TOP", 0, 1)
+
+		end)
+		
+		-- Text display
+		local Value = makeFontString(self.Health, myriad, 12)
+		Value:SetAllPoints(Reputation)
+		Value:SetJustifyH("CENTER")
+		self:Tag(Value, '[sz:currep] / [sz:maxrep] [sz:standing]')
+		Reputation.value = Value
+		Value:SetAlpha(0)
+		
+		-- Add a background
+		local bg = Reputation:CreateTexture(nil, 'BACKGROUND')
+		bg:SetAllPoints(Reputation)
+		bg:SetTexture(0,0,0,1)
+
+		-- Register it with oUF
+		self.Reputation = Reputation
+	end
+		
+	
 	--experience bar
 	if (unit == 'player') then
 		-- Position and size
 		local Experience = CreateFrame('StatusBar', nil, self)
 		Experience:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
 		Experience:SetStatusBarColor(0,1,1)
-		Experience:SetPoint("BOTTOM", self, "TOP")
+		Experience:SetPoint("BOTTOM", self.Reputation, "TOP", 0, 1)
 		Experience:SetHeight(7)
 		Experience:SetWidth(self.Health:GetWidth())
 		CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
@@ -951,70 +1019,19 @@ local aStyle = function(self, unit)
 				self.value:SetAlpha(1)
 			end
 		end)
-		
+	
 		-- Add a background
 		local bg = Rested:CreateTexture(nil, 'BACKGROUND')
-		bg:SetAllPoints(Experience)
+		--bg:SetAllPoints(Experience)
+		bg:SetPoint("TOPLEFT", Experience)
+		bg:SetPoint("BOTTOMRIGHT", Experience, 0, -1)
 		bg:SetTexture(0,0,0,1)
 
 		-- Register it with oUF
 		self.Experience = Experience
 		self.Experience.Rested = Rested
 	end
-	
-	--reputation bar
-	if (unit == 'player') then
-		-- Position and size
-		local Reputation = CreateFrame('StatusBar', nil, self)
-		Reputation:SetPoint('TOP', self, "BOTTOM", 0, 0)
-		Reputation:SetHeight(7)
-		Reputation:SetWidth(self.Health:GetWidth())
 
-		CreateBorder(Reputation, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, false, true)
-		Reputation:SetFrameLevel(self:GetFrameLevel()-1)
-		
-		local texture = Reputation:CreateTexture(nil)
-		texture:SetTexture(.5,.5,.5,1)
-		Reputation:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
-		
-		Reputation.PostUpdate = function(self, unit, min, max)
-			local _, standing = GetWatchedFactionInfo()
-			self:SetStatusBarColor(FACTION_BAR_COLORS[standing].r, FACTION_BAR_COLORS[standing].g, FACTION_BAR_COLORS[standing].b)
-		end
-		
-		Reputation:SetScript("OnEnter", function(self, ...)
-			self.value:SetAlpha(1)
-		end)
-		
-		Reputation:SetScript("OnLeave", function(self, ...)
-			self.value:SetAlpha(0)
-		end)
-		
-		Reputation:SetScript("OnMouseDown", function(self, ...)
-			self.value:SetText(GetWatchedFactionInfo())		
-		end)
-		
-		Reputation:SetScript("OnMouseUp", function(self, ...)
-			self.value:UpdateTag()		
-		end)
-		
-		-- Text display
-		local Value = makeFontString(self.Health, myriad, 12)
-		Value:SetAllPoints(Reputation)
-		Value:SetJustifyH("CENTER")
-		self:Tag(Value, '[sz:currep] / [sz:maxrep] [sz:standing]')
-		Reputation.value = Value
-		Value:SetAlpha(0)
-		
-		-- Add a background
-		local bg = Reputation:CreateTexture(nil, 'BACKGROUND')
-		bg:SetAllPoints(Reputation)
-		bg:SetTexture(0,0,0,1)
-
-		-- Register it with oUF
-		self.Reputation = Reputation
-	end
-	
 end
 
 oUF:RegisterStyle('paradox', aStyle)
