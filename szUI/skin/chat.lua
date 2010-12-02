@@ -100,7 +100,6 @@ local function SetChatStyle(frame)
 	CreateBorder(_G[chat.."EditBox"], 14, .5, 0, 0, -8, 4, -8, 4, 0, 0, 0, 0, true)
 	
 	local function colorize(r,g,b)
-		--EditBoxBackground:SetBackdropBorderColor(r, g, b)
 		ColorBorder(_G[chat.."EditBox"], r, g, b)
 	end
 	
@@ -118,11 +117,6 @@ local function SetChatStyle(frame)
 			colorize(ChatTypeInfo[type].r,ChatTypeInfo[type].g,ChatTypeInfo[type].b)
 		end
 	end)
-	
-	--if _G[chat] ~= _G["ChatFrame2"] then
-	--	origs[_G[chat]] = _G[chat].AddMessage
-	--	_G[chat].AddMessage = AddMessage
-	--end
 end
 
 -- Setup chatframes 1 to 10 on login.
