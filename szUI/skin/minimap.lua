@@ -20,8 +20,9 @@ MinimapZoneText:SetPoint("CENTER", MinimapZoneTextButton, "CENTER", 0, 0)
 Minimap:ClearAllPoints()
 Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -.25*42, -.24*42)
 Minimap:SetSize(4*42, 4*42)
-Minimap:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile="Interface/Buttons/WHITE8X8", insets= {left=2, right=2, top=0, bottom=2}, edgeSize=2})
+Minimap:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background"})--, edgeFile="Interface/Buttons/WHITE8X8", insets= {left=2, right=2, top=0, bottom=2}, edgeSize=2})
 Minimap:SetBackdropBorderColor(0, 0, 0, 1)
+CreateBorder(Minimap, 14, .5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3)
 
 -- Hide Border
 MinimapBorder:Hide()
@@ -132,11 +133,11 @@ local menuList = {
     func = function() if IsInGuild() then if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end GuildFrame_Toggle() end end},
     {text = LFG_TITLE,
     func = function() ToggleFrame(LFDParentFrame) end},
-    {text = L_LFRAID,
+    {text = "Looking for Raid",
     func = function() ToggleFrame(LFRParentFrame) end},
     {text = HELP_BUTTON,
     func = function() ToggleHelpFrame() end},
-    {text = L_CALENDAR,
+    {text = "Calendar",
     func = function()
     if(not CalendarFrame) then LoadAddOn("Blizzard_Calendar") end
         Calendar_Toggle()
