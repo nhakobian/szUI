@@ -100,6 +100,8 @@ local spark_texture = "Interface\\AddOns\\paradoxUI\\media\\spark"
 local white_square = "Interface\\AddOns\\paradoxUI\\media\\white"
 
 local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf" --font = "Fonts/ARIALN.TTF"
+local expressway = "Interface\\Addons\\szUnitFrames\\media\\expressway.ttf"
+local myriad = "Interface\\Addons\\szUnitFrames\\media\\myriad.ttf"
 
 -- Shortens Numbers
 function ShortNumber(num)
@@ -173,11 +175,6 @@ local PostUpdateHP = function(health, unit, min, max)
 	local dead = UnitIsDead(unit)
 	local ghost = UnitIsGhost(unit)
 	local name = oUF.Tags['name'](unit)
-	--if UnitInVehicle(unit) and unit=='player' then
-	--	min = UnitHealth('vehicle')
-	--	max = UnitHealthMax('vehicle')
-	--end
-	--if unit=='vehicle' then print("InVehicle:"..health:GetParent():GetName()) end
 		
 	health.Name = name
 
@@ -195,12 +192,14 @@ local PostUpdateHP = function(health, unit, min, max)
 			
 	else
 		if (min ~= max) then
-			local r, g, b = oUF.ColorGradient(min / max, unpack(health.bg.smoothGradient or oUF.colors.smooth))				
+			local r, g, b = oUF.ColorGradient(min / max, unpack(oUF.colors.smooth))				
 		
 			if (unit == "player" or unit=='vehicle') then
-				health.value:SetText(min.."/"..max)
+				--health.value:SetText("|cmin.." ("..floor(min / max * 100).."%"..")")
+				health.value:SetFormattedText("|cff%02x%02x%02x %s (%d%%)", r*255, g*255, b*255, min, floor(min / max * 100))
+				print(gsub(health.value:GetText(), "|", "||"))
 			elseif(unit == "target" or unit == "pet") then				
-				health.value:SetText(ShortNumber(min).."|r/"..ShortNumber(max).."|r ("..floor(min / max * 100).."%"..")")
+				health.value:SetText(ShortNumber(min).."|r ("..floor(min / max * 100).."%"..")")
 				--if unit ~= 'pet' then
 				--	health.percent:SetText(floor(min / max * 100).."%")
 				--	health.percent:SetTextColor(r,g,b)
@@ -609,9 +608,11 @@ local aStyle = function(self, unit)
 	end
 		
 	-- Size
-	self.Health:SetHeight((self:GetHeight()-2*inset)*.75)
+	--self.Health:SetHeight((self:GetHeight()-2*inset)*.75)
+	self.Health:SetHeight((self:GetHeight()-2*inset)-6-inset)
 	self.Health:SetWidth(self:GetWidth() - portrait_offset - 2*inset)
-	self.Power:SetHeight((self:GetHeight()-2*inset)*.25 - 1)
+	--self.Power:SetHeight((self:GetHeight()-2*inset)*.25 - 1)
+	self.Power:SetHeight(6+inset)
 	self.Power:SetWidth(self:GetWidth() - portrait_offset - 2*inset)
 	
 	-- Fontstrings
@@ -624,34 +625,42 @@ local aStyle = function(self, unit)
 		fsize = 8
 	end
 
-	--HP Value String
-	self.Health.value = makeFontString(self.Health, font, fsize)
-	self.Health.value:SetPoint("RIGHT", self.Health, -inset, 0)
+
+	-- Generates the Power Value String
+	self.Power.value = makeFontString(self.Power, myriad, fsize)
+	self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset, -(fsize)/2+1)
+	
+	--Print out unit info on player/target
+	--if (unit == "player" or unit == "target") then
+		self.Power.info = makeFontString(self.Power, myriad, fsize)
+		self.Power.info:SetPoint("BOTTOMLEFT", self.Health, inset, -(fsize)/2+1)
+		self.Power.info:SetPoint("RIGHT", self.Power.value, "LEFT", -2, 0)
+		self.Power.info:SetJustifyH("LEFT")
+		self:Tag(self.Power.info, "[difficulty][smartlevel][ >classification]|r[ >race][raidcolor][ >smartclass]|r")
+	--end
+
+		--HP Value String
+	self.Health.value = makeFontString(self.Health, myriad, fsize+2)
+	self.Health.value:SetPoint("TOPRIGHT", self.Health, -inset, -inset)
+	self.Health.value:SetPoint("BOTTOM", self.Power.info, "TOP")
 	self.Health.value:SetJustifyH("RIGHT")
+
+		
 	
 	--Name string
-	self.Name = makeFontString(self.Health, font, fsize)
-	self.Name:SetPoint("LEFT", self.Health, inset, 0)
-	self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", 0, 0)
+	self.Name = makeFontString(self.Health, myriad, fsize+2)
+	--self.Name:SetPoint("TOPLEFT", self.Health, inset, -((self.Health:GetHeight()-self.Power.info:GetHeight())/2)+(fsize/2))
+	--self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", 0, 0)
+	self.Name:SetPoint("TOPLEFT", self.Health, inset, -inset)
+	self.Name:SetPoint("BOTTOM", self.Power.info, "TOP")
+	self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", -inset, 0)
 	if self.unit == "pet" then
 		self:Tag(self.Name, "[paradox:petname]")
 	else
 		self:Tag(self.Name, "[name]")
 	end
 
-	-- Generates the Power Value String
-	self.Power.value = makeFontString(self.Power, font, fsize-2)
-	self.Power.value:SetPoint("RIGHT", self.Power, -inset, 0)
-	
-	--Print out unit info on player/target
-	if (unit == "player" or unit == "target") then
-		self.Power.info = makeFontString(self.Power, font, fsize-2)
-		self.Power.info:SetPoint("LEFT", self.Power, 2, 0)
-		self.Power.info:SetPoint("RIGHT", self.Power.value, "LEFT", -2, 0)
-		self.Power.info:SetJustifyH("LEFT")
-		self:Tag(self.Power.info, "[difficulty][smartlevel][ >classification]|r[ >race][raidcolor][ >smartclass]|r")
-	end
-		
+
 	-- Health & Power Updates
 	self.Health.PostUpdate = PostUpdateHP
 	self.Power.PostUpdate = PostUpdatePower
@@ -919,17 +928,17 @@ local aStyle = function(self, unit)
 		Rested:SetStatusBarColor(1,0,1)
 		
 		-- Text display
-		local Value = makeFontString(self.Health, font, 12)
+		local Value = makeFontString(self.Health, myriad, 12)
 		Value:SetAllPoints(Experience)
 		Value:SetJustifyH("CENTER")
-		self:Tag(Value, '[sz:curxp]|r / [sz:maxxp]|r[  +>sz:currested]|r')
+		self:Tag(Value, '[sz:curxp]|r / [sz:maxxp]|r[  (+>sz:currested<)]|r')
 		Experience.value = Value
 		Experience.value:SetAlpha(0)
 		
-		local Value2 = makeFontString(self.Health, font, 12)
+		local Value2 = makeFontString(self.Health, myriad, 12)
 		Value2:SetAllPoints(Experience)
 		Value2:SetJustifyH("CENTER")
-		self:Tag(Value2, '[perxp<%] [  +>perrested<%]')
+		self:Tag(Value2, '[perxp<%] [  (+>perrested<%)]')
 		Experience.value2 = Value2
 		Experience.value2:SetAlpha(0)
 		
@@ -1003,7 +1012,7 @@ local aStyle = function(self, unit)
 		end)
 		
 		-- Text display
-		local Value = makeFontString(self.Health, font, 12)
+		local Value = makeFontString(self.Health, myriad, 12)
 		Value:SetAllPoints(Reputation)
 		Value:SetJustifyH("CENTER")
 		self:Tag(Value, '[sz:currep] / [sz:maxrep] [sz:standing]')
