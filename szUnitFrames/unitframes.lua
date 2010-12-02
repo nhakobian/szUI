@@ -13,31 +13,37 @@ szUI.unitframes = {
 			width = 252,
 			height = 63,
 			PortraitFrame = true,
-			VehicleSwitch = true
+			VehicleSwitch = true,
+			power_h = 6
 		},
 		target = {
 			width = 252,
 			height = 63,
 			PortraitFrame = true,
-			PortraitLeft = false
+			PortraitLeft = false,
+			power_h = 6
 		},
 		targettarget = {
 			width = 158,
-			height = 42
+			height = 42,
+			power_h = 4
 		},
 		pet = {
 			width = 158,
-			height = 42
+			height = 42,
+			power_h = 4
 		},
 		focus = {
 			width = 210,
 			height = 52,
 			PortraitFrame = true,
-			PortraitLeft = true
+			PortraitLeft = true,
+			power_h = 4
 		},
 		focustarget = {
 			width = 105,
-			height = 32
+			height = 32,
+			power_h = 2
 		}
 	}
 
@@ -90,14 +96,6 @@ oUF.colors.happiness = {
 
 oUF.colors.smooth = { 1, 0, 0, 1, 1, 0, 1, 1, 1}
 oUF.colors.runes = {{196/255, 30/255, 58/255};{173/255, 217/255, 25/255};{35/255, 127/255, 255/255};{178/255, 53/255, 240/255};}
-	
---local font = "Interface\\AddOns\\paradoxUI\\media\\font.ttf"
-local fill_texture = "Interface\\AddOns\\paradoxUI\\media\\Flat"
-local bg_texture = "Interface\\AddOns\\paradoxUI\\media\\texture_bg"
-local raid_texture = "Interface\\AddOns\\paradoxUI\\media\\texture"
-local border = "Interface\\AddOns\\paradoxUI\\media\\border"
-local spark_texture = "Interface\\AddOns\\paradoxUI\\media\\spark"
-local white_square = "Interface\\AddOns\\paradoxUI\\media\\white"
 
 local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf" --font = "Fonts/ARIALN.TTF"
 local expressway = "Interface\\Addons\\szUnitFrames\\media\\expressway.ttf"
@@ -116,7 +114,7 @@ function ShortNumber(num)
 end
 	
 -- Name
-	
+
 oUF.TagEvents["paradox:petname"] = "UNIT_PET"
 oUF.Tags["paradox:petname"] = function(u, r)
 	return UnitName(r or u)
@@ -179,7 +177,6 @@ local PostUpdateHP = function(health, unit, min, max)
 	health.Name = name
 
 	if (disconnnected or dead or ghost) then
-	
 		health:SetValue(0)	
 		
 		if(disconnnected and unit == "target") then
@@ -189,33 +186,22 @@ local PostUpdateHP = function(health, unit, min, max)
 		elseif(dead and (unit == "player" or unit == "target")) then
 			health.value:SetText("dead ("..ShortNumber(max)..")")
 		end
-			
 	else
 		if (min ~= max) then
 			local r, g, b = oUF.ColorGradient(min / max, unpack(oUF.colors.smooth))				
 		
 			if (unit == "player" or unit=='vehicle') then
-				--health.value:SetText("|cmin.." ("..floor(min / max * 100).."%"..")")
 				health.value:SetFormattedText("|cff%02x%02x%02x %s (%d%%)", r*255, g*255, b*255, min, floor(min / max * 100))
-				print(gsub(health.value:GetText(), "|", "||"))
 			elseif(unit == "target" or unit == "pet") then				
 				health.value:SetText(ShortNumber(min).."|r ("..floor(min / max * 100).."%"..")")
-				--if unit ~= 'pet' then
-				--	health.percent:SetText(floor(min / max * 100).."%")
-				--	health.percent:SetTextColor(r,g,b)
-				--end
 			elseif(unit == "targettarget" or unit == "focus") then
 				health.value:SetText(floor(min / max * 100).."%")
 			end				
 		elseif (min == max) then
-			if (unit == "player" or unit=='vehicle' or unit == "focus") then
+			if (unit == "player" or unit=='vehicle') then
 				health.value:SetText(max)
-			elseif(unit == "target") then		
+			elseif(unit == "target" or unit == "focus" or unit == 'pet') then		
 				health.value:SetText(ShortNumber(max))
-				--health.percent:SetText()
-			elseif(unit == 'pet') then
-				health.value:SetText(ShortNumber(max))
-				--health.percent:SetText()
 			elseif(unit == "targettarget") then
 				health.value:SetText(floor(min / max * 100).."%")
 			end
@@ -345,12 +331,6 @@ local CreateAuraTimer = function(self, elapsed)
 	end
 end
 
-local CancelAura = function(self, button)
-	if button == "RightButton" and not self.debuff then
-		-- CancelUnitBuff("player", self:GetID()) -- protected in cata?
-	end
-end
-
 function SetTemplate(f)
 	local mult = 1
 	f:SetBackdrop({
@@ -466,7 +446,7 @@ local makeFontString = function(frame, font, size, ...)
 		fstring:SetJustifyV(justifyv)
 	end
 
-	fstring.OldSetPoint = fstring.SetPoint
+--[[	fstring.OldSetPoint = fstring.SetPoint
 	fstring.SetPoint = function(self, ...)
 		local fpoint, anchorframe, anchorpoint, x, y = ...
 		if y == nil and x~= nil then
@@ -492,7 +472,7 @@ local makeFontString = function(frame, font, size, ...)
 		end
 	
 	end
-
+]]--
    	return fstring
 end
 
@@ -608,58 +588,66 @@ local aStyle = function(self, unit)
 	end
 		
 	-- Size
-	--self.Health:SetHeight((self:GetHeight()-2*inset)*.75)
-	self.Health:SetHeight((self:GetHeight()-2*inset)-6-inset)
+	self.Health:SetHeight((self:GetHeight()-2*inset)-settings.power_h-inset)
 	self.Health:SetWidth(self:GetWidth() - portrait_offset - 2*inset)
-	--self.Power:SetHeight((self:GetHeight()-2*inset)*.25 - 1)
-	self.Power:SetHeight(6+inset)
+	self.Power:SetHeight(settings.power_h+inset)
 	self.Power:SetWidth(self:GetWidth() - portrait_offset - 2*inset)
 	
 	-- Fontstrings
-	
---local makeFontString = function(frame, font, size, ...)
---	local outline, justifyh, justifyv = ...
 
-	local fsize = 12
-	if (unit == 'pet') then
-		fsize = 8
+	local fsize = 0
+	if (unit == 'player' or unit == 'target') then
+		fsize = 12
+	else
+		fsize = 10
 	end
 
-
+	local extra_padding = 0
+	if (portrait_left == false) then
+		extra_padding = -inset
+	end
+	
 	-- Generates the Power Value String
 	self.Power.value = makeFontString(self.Power, myriad, fsize)
-	self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset, -(fsize)/2+1)
+	self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset-extra_padding, -(fsize)/2+1)
 	
 	--Print out unit info on player/target
-	--if (unit == "player" or unit == "target") then
+	if unit == "player" or unit == "target" then
 		self.Power.info = makeFontString(self.Power, myriad, fsize)
 		self.Power.info:SetPoint("BOTTOMLEFT", self.Health, inset, -(fsize)/2+1)
 		self.Power.info:SetPoint("RIGHT", self.Power.value, "LEFT", -2, 0)
 		self.Power.info:SetJustifyH("LEFT")
 		self:Tag(self.Power.info, "[difficulty][smartlevel][ >classification]|r[ >race][raidcolor][ >smartclass]|r")
-	--end
+	end
 
-		--HP Value String
+	--HP Value String
 	self.Health.value = makeFontString(self.Health, myriad, fsize+2)
-	self.Health.value:SetPoint("TOPRIGHT", self.Health, -inset, -inset)
-	self.Health.value:SetPoint("BOTTOM", self.Power.info, "TOP")
-	self.Health.value:SetJustifyH("RIGHT")
-
-		
+	--self.Health.value:SetJustifyH("RIGHT")
+	if unit == "player" or unit =="target" then
+		self.Health.value:SetPoint("TOPRIGHT", self.Health, -inset-extra_padding, -inset)
+		self.Health.value:SetPoint("BOTTOM", self.Power.info, "TOP")
+	else
+		self.Health.value:SetPoint("RIGHT", self.Health, -inset-extra_padding, 0)
+	end
 	
 	--Name string
 	self.Name = makeFontString(self.Health, myriad, fsize+2)
-	--self.Name:SetPoint("TOPLEFT", self.Health, inset, -((self.Health:GetHeight()-self.Power.info:GetHeight())/2)+(fsize/2))
-	--self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", 0, 0)
-	self.Name:SetPoint("TOPLEFT", self.Health, inset, -inset)
-	self.Name:SetPoint("BOTTOM", self.Power.info, "TOP")
-	self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", -inset, 0)
+	if unit == "player" or unit == "target" then
+		self.Name:SetPoint("TOPLEFT", self.Health, inset, -inset)
+		self.Name:SetPoint("BOTTOM", self.Power.info, "TOP")
+		self.Name:SetPoint("RIGHT", self.Health.value, "LEFT", -inset, 0)
+	else
+		self.Name:SetPoint("LEFT", self.Health, inset, 0)
+	end
+	if unit == "focustarget" then
+		self.Name:SetJustifyH("CENTER")
+		self.Name:SetPoint("RIGHT", self.Health, -inset+fsize/4, 0) --+fsize/4 is the centering fix
+	end
 	if self.unit == "pet" then
 		self:Tag(self.Name, "[paradox:petname]")
 	else
 		self:Tag(self.Name, "[name]")
 	end
-
 
 	-- Health & Power Updates
 	self.Health.PostUpdate = PostUpdateHP

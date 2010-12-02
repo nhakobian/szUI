@@ -179,9 +179,9 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	power.colorPower = true
 		
 	local name = self.Health:CreateFontString(nil, 'OVERLAY')
-	name:SetFont(font, 10, "THINOUTLINE")
+	name:SetFont(font, 12, "THINOUTLINE")
 	name:SetPoint("TOPLEFT", self, frameinset, -2*frameinset)
-	name:SetPoint("TOPRIGHT", self, -frameinset, -2*frameinset)
+	name:SetPoint("TOPRIGHT", self, -frameinset+3, -2*frameinset)
 	name:SetShadowOffset(1,-1)
 	name:SetHeight(10)
 	name.colorClass = true
@@ -301,7 +301,7 @@ function szUnitFrames.PartyTargets(self, unit)
 	local name = health:CreateFontString(nil, 'OVERLAY')
 	name:SetFont(font, 12, "THINOUTLINE")
 	name:SetPoint("TOPLEFT", self.Health, 3, 0)
-	name:SetPoint("BOTTOMRIGHT", self.Health, -3, 0)
+	name:SetPoint("BOTTOMRIGHT", self.Health, -3+3, 0) -- fsize/4 is centering fix
 	name:SetJustifyV("MIDDLE")
 	name:SetJustifyH("CENTER")
 	name:SetShadowOffset(1,-1)
