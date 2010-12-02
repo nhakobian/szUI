@@ -15,7 +15,7 @@ szFonts:SetScript("OnEvent", function(self, event, addon)
 	--if addon ~= "Tukui" then return end
 	
 	--local NORMAL     = TukuiCF.media.font
-	local COMBAT     = [[Interface\AddOns\paradoxUI\media\combat_font.ttf]]
+	local COMBAT     = [[Interface\AddOns\szUI\media\combat_font.ttf]]
 	--local NUMBER     = TukuiCF.media.font	
 
 	--UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12

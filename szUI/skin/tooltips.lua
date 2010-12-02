@@ -145,9 +145,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 end)
 
 function FrameStyle(self, ...)
-	self:SetBackdrop({bgFile="Interface/Buttons/WHITE8X8", edgeFile="Interface/Tooltips/UI-Tooltip-Border", edgeSize=16, insets={top=3, bottom=3, left=3, right=3}})
+	self:SetBackdrop({bgFile="Interface/Buttons/WHITE8X8", insets={top=3, bottom=3, left=3, right=3}})
 	self:SetBackdropColor(0, 0, 0, .9)
-	self:SetBackdropBorderColor(.5, 0, 0, 1)
+	CreateBorder(self, 14, .5, 0, 0)
 end
 
 function TooltipStyle(self, ...)
@@ -175,3 +175,12 @@ local Tooltips = {  GameTooltip,
 for _, tip in pairs(Tooltips) do
 	tip:HookScript("OnShow", TooltipStyle)
 end
+
+--Style the MultiTooltips
+szCommon.ALStack:Register("szMultiTooltips", function(event, ...)
+	szMultiTips.StyleFunc = function(self, Tip)
+		Tip:SetBackdrop({bgFile="Interface/Buttons/WHITE8X8", insets={top=3, bottom=3, left=3, right=3}})
+		Tip:SetBackdropColor(0, 0, 0, .9)
+		CreateBorder(Tip, 14, .5, 0, 0)
+	end
+end)
