@@ -35,8 +35,9 @@ local function SetChatStyle(frame)
 	
 	-- move the chat edit box
 	_G[chat.."EditBox"]:ClearAllPoints();
-	_G[chat.."EditBox"]:SetPoint("BOTTOMLEFT", pUI_ChatDock, "TOPLEFT", 2, -2)
-	_G[chat.."EditBox"]:SetPoint("BOTTOMRIGHT", pUI_ChatDock, "TOPRIGHT", -2, -2)
+	_G[chat.."EditBox"]:SetPoint("BOTTOMLEFT", pUI_ChatDock, "TOPLEFT", 4, 5)
+	_G[chat.."EditBox"]:SetPoint("BOTTOMRIGHT", pUI_ChatDock, "TOPRIGHT", -4, 5)
+	_G[chat.."EditBox"]:SetHeight(20)
 	
 	-- Hide textures
 	for j = 1, #CHAT_FRAME_TEXTURES do
@@ -89,24 +90,18 @@ local function SetChatStyle(frame)
 	-- hide edit box every time we click on a tab
 	_G[chat.."Tab"]:HookScript("OnClick", function() _G[chat.."EditBox"]:Hide() end)
 			
-	-- rename combag log to log
-	--if _G[chat] == _G["ChatFrame2"] then
-	--	FCF_SetWindowName(_G[chat], "Log")
-	--end
-			
 	-- create our own texture for edit box
-	local EditBoxBackground = CreateFrame("frame", "pUI_ChatchatEditBoxBackground", _G[chat.."EditBox"])
-	EditBoxBackground:SetBackdrop({ bgFile="Interface\\AddOns\\paradoxUI\\media\\Flat", edgeFile="Interface\\AddOns\\paradoxUI\\media\\Flat", edgeSize=2})
-	EditBoxBackground:SetBackdropColor(0, 0, 0, .65)
-	--TukuiDB.CreatePanel(EditBoxBackground, 1, 1, "LEFT", _G[chat.."EditBox"], "LEFT", 0, 0)
-	EditBoxBackground:ClearAllPoints()
-	EditBoxBackground:SetPoint("TOPLEFT", _G[chat.."EditBox"], 5, -5)
-	EditBoxBackground:SetPoint("BOTTOMRIGHT", _G[chat.."EditBox"], -5, 5)
-	EditBoxBackground:SetFrameStrata("LOW")
-	EditBoxBackground:SetFrameLevel(1)
+
+	local Background = _G[chat.."EditBox"]:CreateTexture(nil)
+	Background:SetTexture(0, 0, 0, .5)
+	Background:SetPoint("TOPLEFT", 8, 0)
+	Background:SetPoint("BOTTOMRIGHT", -8, 0)
+
+	CreateBorder(_G[chat.."EditBox"], 14, .5, 0, 0, -8, 4, -8, 4, 0, 0, 0, 0, true)
 	
 	local function colorize(r,g,b)
-		EditBoxBackground:SetBackdropBorderColor(r, g, b)
+		--EditBoxBackground:SetBackdropBorderColor(r, g, b)
+		ColorBorder(_G[chat.."EditBox"], r, g, b)
 	end
 	
 	-- update border color according where we talk
