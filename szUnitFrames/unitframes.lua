@@ -103,6 +103,7 @@ local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\express
 
 -- Shortens Numbers
 function ShortNumber(num)
+	if num == nil then return end
 	if(num >= 1e6) then
 		return (math.floor((num/1e6)*10 + 0.5))/10 .."|cffb3b3b3m"
 	elseif(num >= 1e3) then
@@ -118,6 +119,53 @@ oUF.TagEvents["paradox:petname"] = "UNIT_PET"
 oUF.Tags["paradox:petname"] = function(u, r)
 	return UnitName(r or u)
 end
+
+for tag, func in pairs({
+	['sz:currep'] = function()
+		local _, _, min, _, value = GetWatchedFactionInfo()
+		return value-min
+	end,
+	['sz:maxrep'] = function()
+		local _, _, min, max = GetWatchedFactionInfo()
+		return max-min
+	end,
+	['sz:standing'] = function()
+		local _, standing = GetWatchedFactionInfo()
+		return _G["FACTION_STANDING_LABEL"..standing]
+	end,
+	['sz:standingcolor'] = function()
+		local _, standing = GetWatchedFactionInfo()
+		return FACTION_BAR_COLORS[standing]
+	end,
+}) do
+	oUF.Tags[tag] = func
+	oUF.TagEvents[tag] = 'UPDATE_FACTION'
+end
+
+oUF.Tags['sz:curxp'] = function(unit)
+	if(unit == 'pet') then
+		return ShortNumber(GetPetExperience())
+	else
+		return ShortNumber(UnitXP(unit))
+	end
+end
+oUF.TagEvents['sz:curxp'] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UNIT_PET_EXPERIENCE UPDATE_EXHAUSTION'
+
+oUF.Tags['sz:maxxp'] = function(unit)
+	if(unit == 'pet') then
+		local _, max = ShortNumber(GetPetExperience())
+		return max
+	else
+		return ShortNumber(UnitXPMax(unit))
+	end
+end
+oUF.TagEvents['sz:maxxp'] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UNIT_PET_EXPERIENCE UPDATE_EXHAUSTION'
+
+oUF.Tags['sz:currested'] = function()
+	return ShortNumber(GetXPExhaustion())
+end
+oUF.TagEvents['sz:currested'] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UNIT_PET_EXPERIENCE UPDATE_EXHAUSTION'
+
 	
 -- Post Health Update
 local PostUpdateHP = function(health, unit, min, max)
@@ -451,7 +499,7 @@ end
 
 
 local aStyle = function(self, unit)
-	
+	self:SetFrameLevel(3)
 	local settings = szUI.unitframes[unit]
 	local inset = szUI.unitframes.general.inset
 
@@ -850,6 +898,125 @@ local aStyle = function(self, unit)
 		end
 	
 		self.TotemBar = TotemBar
+	end
+	
+	--experience bar
+	if (unit == 'player') then
+		-- Position and size
+		local Experience = CreateFrame('StatusBar', nil, self)
+		Experience:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
+		Experience:SetStatusBarColor(0,1,1)
+		Experience:SetPoint("BOTTOM", self, "TOP")
+		Experience:SetHeight(7)
+		Experience:SetWidth(self.Health:GetWidth())
+		CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
+		Experience:SetFrameLevel(self:GetFrameLevel()-1)
+		
+		-- Position and size the Rested background-bar
+		local Rested = CreateFrame('StatusBar', nil, Experience)
+		Rested:SetAllPoints(Experience)
+		Rested:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
+		Rested:SetStatusBarColor(1,0,1)
+		
+		-- Text display
+		local Value = makeFontString(self.Health, font, 12)
+		Value:SetAllPoints(Experience)
+		Value:SetJustifyH("CENTER")
+		self:Tag(Value, '[sz:curxp]|r / [sz:maxxp]|r[  +>sz:currested]|r')
+		Experience.value = Value
+		Experience.value:SetAlpha(0)
+		
+		local Value2 = makeFontString(self.Health, font, 12)
+		Value2:SetAllPoints(Experience)
+		Value2:SetJustifyH("CENTER")
+		self:Tag(Value2, '[perxp<%] [  +>perrested<%]')
+		Experience.value2 = Value2
+		Experience.value2:SetAlpha(0)
+		
+		Experience:SetScript("OnEnter", function(self, ...)
+			self.value:SetAlpha(1)
+			self.leftflag = false
+		end)
+		
+		Experience:SetScript("OnLeave", function(self, ...)
+			self.value:SetAlpha(0)
+			self.value2:SetAlpha(0)
+			self.leftflag = true
+		end)
+		
+		Experience:SetScript("OnMouseDown", function(self, ...)
+			self.value:SetAlpha(0)
+			self.value2:SetAlpha(1)
+		end)
+		
+		Experience:SetScript("OnMouseUp", function(self, ...)
+			self.value2:SetAlpha(0)
+			if not(self.leftflag) then
+				self.value:SetAlpha(1)
+			end
+		end)
+		
+		-- Add a background
+		local bg = Rested:CreateTexture(nil, 'BACKGROUND')
+		bg:SetAllPoints(Experience)
+		bg:SetTexture(0,0,0,1)
+
+		-- Register it with oUF
+		self.Experience = Experience
+		self.Experience.Rested = Rested
+	end
+	
+	--reputation bar
+	if (unit == 'player') then
+		-- Position and size
+		local Reputation = CreateFrame('StatusBar', nil, self)
+		Reputation:SetPoint('TOP', self, "BOTTOM", 0, 0)
+		Reputation:SetHeight(7)
+		Reputation:SetWidth(self.Health:GetWidth())
+
+		CreateBorder(Reputation, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, false, true)
+		Reputation:SetFrameLevel(self:GetFrameLevel()-1)
+		
+		local texture = Reputation:CreateTexture(nil)
+		texture:SetTexture(.5,.5,.5,1)
+		Reputation:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
+		
+		Reputation.PostUpdate = function(self, unit, min, max)
+			local _, standing = GetWatchedFactionInfo()
+			self:SetStatusBarColor(FACTION_BAR_COLORS[standing].r, FACTION_BAR_COLORS[standing].g, FACTION_BAR_COLORS[standing].b)
+		end
+		
+		Reputation:SetScript("OnEnter", function(self, ...)
+			self.value:SetAlpha(1)
+		end)
+		
+		Reputation:SetScript("OnLeave", function(self, ...)
+			self.value:SetAlpha(0)
+		end)
+		
+		Reputation:SetScript("OnMouseDown", function(self, ...)
+			self.value:SetText(GetWatchedFactionInfo())		
+		end)
+		
+		Reputation:SetScript("OnMouseUp", function(self, ...)
+			self.value:UpdateTag()		
+		end)
+		
+		-- Text display
+		local Value = makeFontString(self.Health, font, 12)
+		Value:SetAllPoints(Reputation)
+		Value:SetJustifyH("CENTER")
+		self:Tag(Value, '[sz:currep] / [sz:maxrep] [sz:standing]')
+		Reputation.value = Value
+		Value:SetAlpha(0)
+		
+		-- Add a background
+		local bg = Reputation:CreateTexture(nil, 'BACKGROUND')
+		bg:SetAllPoints(Reputation)
+		bg:SetTexture(0,0,0,1)
+
+		-- Register it with oUF
+		self.Reputation = Reputation
 	end
 	
 end
