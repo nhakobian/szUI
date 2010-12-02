@@ -48,6 +48,14 @@ function CreateBorder(self, borderSize, R, G, B, ...)
             self.Border[i]:SetHeight(borderSize)
             self.Border[i]:SetVertexColor(R or 1, G or 1, B or 1)
         end
+
+		if noBottom == true then 
+			self.Border[6]:Hide() 
+			self.Border[3]:Hide() 
+			self.Border[4]:Hide() 
+			bL2 = borderSize
+			bR2 = borderSize
+		end
         
         self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
         self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
@@ -76,13 +84,7 @@ function CreateBorder(self, borderSize, R, G, B, ...)
         self.Border[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
         self.Border[8]:SetPoint('TOPRIGHT', self.Border[2], 'BOTTOMRIGHT')
         self.Border[8]:SetPoint('BOTTOMRIGHT', self.Border[4], 'TOPRIGHT')
-
-		if noBottom == true then 
-			self.Border[6]:Hide() 
-			self.Border[3]:Hide() 
-			self.Border[4]:Hide() 
-		end
-        
+       
         local space
         if (borderSize >= 10) then
             space = 3
