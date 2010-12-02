@@ -1,5 +1,4 @@
-local font = "Fonts\\ARIALN.TTF" --"Interface\\AddOns\\paradoxUI\\media\\expressway.ttf"
-
+local font = "Interface\\Addons\\szUnitFrames\\media\\myriad.ttf"
 szCommon:EventDebug("szUnitFrames")
 
 szUnitFrames = CreateFrame("FRAME")
