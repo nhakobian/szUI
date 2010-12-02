@@ -25,12 +25,12 @@ szUI.unitframes = {
 		},
 		targettarget = {
 			width = 158,
-			height = 42,
+			height = 34,
 			power_h = 4
 		},
 		pet = {
 			width = 158,
-			height = 42,
+			height = 34,
 			power_h = 4
 		},
 		focus = {
@@ -230,7 +230,7 @@ local PostUpdatePower = function(power, unit, min, max)
 		smin = 0
 	end
 	
-	if(unit == "player" or unit == "target" or unit == "pet" or unit=='vehicle') then
+	if(unit == "player" or unit == "target" or unit=='vehicle') then
 		if(ptype == "MANA") then
 			local r, g, b = oUF.ColorGradient(min / max, unpack(power.bg.smoothGradient or oUF.colors.smooth))
 			if min ~= max then
@@ -238,10 +238,6 @@ local PostUpdatePower = function(power, unit, min, max)
 			else
 				power.value:SetText(smax)
 			end
-			---if (unit ~= "target" and unit ~= 'pet') then
-			--	power.percent:SetText()
-			--	power.percent:SetTextColor(r,g,b)
-			--end
 		elseif(ptype == "FOCUS" or ptype == "ENERGY") then
 			if min ~= max then
 				power.value:SetText(smin.."/"..smax)
@@ -499,7 +495,11 @@ local aStyle = function(self, unit)
 	self:SetBackdropColor(0, 0, 0, 1)
 	self:SetBackdropBorderColor(0, 0, 0, 1)
 
-	CreateBorder(self, szUI.unitframes.general.border_size, .3, .3, .3)
+	if unit == 'targettarget' or unit == 'pet' then
+		CreateBorder(self, szUI.unitframes.general.border_size, .3, .3, .3,0,0,0,0,0,0,0,0,false,true)
+	else
+		CreateBorder(self, szUI.unitframes.general.border_size, .3, .3, .3)
+	end
 	
 	-- HP Bar
 	self.Health = CreateFrame("StatusBar", nil, self)
@@ -622,7 +622,6 @@ local aStyle = function(self, unit)
 
 	--HP Value String
 	self.Health.value = makeFontString(self.Health, myriad, fsize+2)
-	--self.Health.value:SetJustifyH("RIGHT")
 	if unit == "player" or unit =="target" then
 		self.Health.value:SetPoint("TOPRIGHT", self.Health, -inset-extra_padding, -inset)
 		self.Health.value:SetPoint("BOTTOM", self.Power.info, "TOP")
@@ -1023,10 +1022,14 @@ oUF:Factory(function(self)
 	self:SetActiveStyle('paradox')
 	self:Spawn('player'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", szUI.unitframes.player.x, szUI.unitframes.player.y)
 	self:Spawn('target'):SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", scale(-8*42), scale(5*42))
-	self:Spawn('targettarget'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMRIGHT", -14*42, 3.75*42-.5)
+	--self:Spawn('targettarget'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMRIGHT", -14*42, 3.75*42-.5)
+	self:Spawn('targettarget'):SetPoint("TOPLEFT", oUF_paradoxTarget, "BOTTOMLEFT", 12, 3)
+	oUF_paradoxTargettarget:SetFrameLevel(oUF_paradoxTarget:GetFrameLevel()-1)
 	self:Spawn('focus'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0.5*42, 7*42)
 	self:Spawn('focustarget'):SetPoint("BOTTOMLEFT", oUF_paradoxFocus, "TOPLEFT", 0, 0.25*42) 
-	self:Spawn('pet'):SetPoint("TOPRIGHT", oUF_paradoxPlayer, "BOTTOMRIGHT", 0, -.25*42)
+	--self:Spawn('pet'):SetPoint("TOPRIGHT", oUF_paradoxPlayer, "BOTTOMRIGHT", 0, -.25*42)
+	self:Spawn('pet'):SetPoint("TOPRIGHT", oUF_paradoxPlayer, "BOTTOMRIGHT", -12, 3)
+	oUF_paradoxPet:SetFrameLevel(oUF_paradoxPlayer:GetFrameLevel()-1)
 end)
 
 --Adjust PopupMenus
