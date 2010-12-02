@@ -17,10 +17,10 @@ szCommon:EventDebug("szMultiTooltips")
 
 local MAX_REF_FRAMES = 10
 
-local function Ref_Style(self, ...)
-	self:SetBackdrop({bgFile="Interface/Buttons/WHITE8X8", edgeFile="Interface/Tooltips/UI-Tooltip-Border", edgeSize=16, insets={top=3, bottom=3, left=3, right=3}})
-	self:SetBackdropColor(0, 0, 0, .9)
-	self:SetBackdropBorderColor(.5, 0, 0, 1)
+local function Ref_Style(Tip)
+	if szMultiTips.StyleFunc then
+		szMultiTips:StyleFunc(Tip)
+	end
 end
 
 local function Ref_OnShow(self, ...)
@@ -189,7 +189,6 @@ function szMultiTips:AddTip(ItemLink)
 		Tip:SetPoint("BOTTOM", UIParent, 0, 80)
 	
 		Ref_OnLoad(Tip)
-		Ref_Style(Tip)
 		Tip:EnableMouse(true)
 		Tip:SetMovable(true)
 
