@@ -36,24 +36,6 @@ local function GetColor(unit)
 	end
 end
 
-GameTooltip:HookScript("OnUpdate",function(self, ...)
-	if self:GetAnchorType() == "ANCHOR_CURSOR" and self.n < 2 then
-		-- h4x for world object tooltip border showing last border color 
-		-- or showing background sometime ~blue :x
-		FrameStyle(self)
-		self.n = self.n + 1
-	end
-end)
-
-WorldMapTooltip:HookScript("OnUpdate",function(self, ...)
-	if self:GetAnchorType() == "ANCHOR_CURSOR_RIGHT" and self.n < 2 then
-		-- h4x for world object tooltip border showing last border color 
-		-- or showing background sometime ~blue :x
-		FrameStyle(self)
-		self.n = self.n + 1
-	end
-end)
-
 GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	local lines = self:NumLines()
 	local GMF = GetMouseFocus()
@@ -66,9 +48,6 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	
 	-- Sometimes when you move your mouse quicky over units in the worldframe, we can get here without a unit
 	if not unit then self:Hide() return end
-	
-	-- for hiding tooltip on unitframes
-	--if (self:GetOwner() ~= UIParent and db.hideuf) then self:Hide() return end
 	
 	-- A "mouseover" unit is better to have as we can then safely say the tip should no longer show when it becomes invalid.
 	if (UnitIsUnit(unit,"mouseover")) then
@@ -134,8 +113,6 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 		local hex, r, g, b = GetColor(unit.."target")
 		if not r and not g and not b then r, g, b = 1, 1, 1 end
 		GameTooltip:AddLine("Target: "..UnitName(unit.."target"), r, g, b)
-	--else
-	--	GameTooltip:AddLine("Target: <NONE>", 1, 1, 1)
 	end
 	
 	-- Sometimes this wasn't getting reset, the fact a cleanup isn't performed at this point, now that it was moved to "OnTooltipCleared" is very bad, so this is a fix
@@ -144,21 +121,15 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
 end)
 
-function FrameStyle(self, ...)
+function TooltipStyle(self, ...)
 	self:SetBackdrop({bgFile="Interface/Buttons/WHITE8X8", insets={top=3, bottom=3, left=3, right=3}})
 	self:SetBackdropColor(0, 0, 0, .9)
 	CreateBorder(self, 14, .5, 0, 0)
-end
-
-function TooltipStyle(self, ...)
-	FrameStyle(self)
 	
 	local name = self:GetName()
 	if name == "GameTooltip" then 
 		GameTooltipStatusBar:Hide() 
 	end
-
-	self.n = 0
 end
 
 local Tooltips = {  GameTooltip,
