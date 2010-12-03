@@ -3,16 +3,6 @@ szCommon:EventDebug("szUnitFrames")
 
 szUnitFrames = CreateFrame("FRAME")
 
-function pfix(pos)
-	local apos = pos - floor(pos)
-	if apos > .5 then
-		return floor(pos) + 1
-	else
-		return floor(pos)
-	end
-end
-
-
 oUF.Tags["sz:ricon"] = function(unit)
 	local index = GetRaidTargetIndex(unit)
 		

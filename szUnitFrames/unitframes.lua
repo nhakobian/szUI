@@ -840,46 +840,33 @@ local aStyle = function(self, unit)
 		self.Resting = resting
 	end
 	
-	
+	--Rep/Exp/totem panel positioning support
 	if (unit == 'player') then
 		function self:RecalcStack(self, ...)
-			print("Start RecalcStack")
 			local parent = self:GetParent()
 
 			if parent.Reputation:IsVisible() then
 				parent.Reputation:ClearAllPoints()
 				parent.Reputation:SetPoint("BOTTOM", parent, "TOP")
-				if parent.Experience:IsVisible() or (parent.TotemBar and parent.TotemBar:IsVisible()) then
-					--hide rep top bar
-					print("hide rep top bar")
-				else
-					print("show rep top bar")
-				end
 			end
 			
 			if parent.Experience:IsVisible() then
 				parent.Experience:ClearAllPoints()
 				if (parent.Reputation:IsVisible()) then
-					parent.Experience:SetPoint("BOTTOM", parent.Reputation, "TOP")
+					parent.Experience:SetPoint("BOTTOM", parent.Reputation, "TOP",0,2)
 				else
-					parent.Experience:SetPoint("BOTTOM", parent, "TOP")
-				end
-				if (parent.TotemBar and parent.TotemBar:IsVisible()) then
-					--hide exp top bar
-					print("hide exp top bar")
-				else
-					print("show exp top bar")
+					parent.Experience:SetPoint("BOTTOM", parent, "TOP",0,0)
 				end
 			end
 			
 			if (parent.TotemBar and parent.TotemBar:IsVisible()) then
 				parent.TotemBar:ClearAllPoints()
 				if parent.Experience:IsVisible() then
-					parent.TotemBar:SetPoint("TOP", parent.Experience, "BOTTOM")
+					parent.TotemBar:SetPoint("BOTTOM", parent.Experience, "TOP")
 				elseif parent.Reputation:IsVisible() then
-					parent.TotemBar:SetPoint("TOP", parent.Reputation, "BOTTOM")
+					parent.TotemBar:SetPoint("BOTTOM", parent.Reputation, "TOP")
 				else
-					parent.TotemBar:SetPoint("TOP", parent, "BOTTOM")
+					parent.TotemBar:SetPoint("BOTTOM", parent, "TOP", 0, -2)
 				end
 			end
 		end
@@ -893,7 +880,7 @@ local aStyle = function(self, unit)
 		Reputation:SetHeight(7)
 		Reputation:SetWidth(self.Health:GetWidth())
 
-		CreateBorder(Reputation, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true, true)
+		CreateBorder(Reputation, 14, .3, .3, .3, 2, 0, 2, 0, 2, 0, 2, 0, true, true)
 		Reputation:SetFrameLevel(self:GetFrameLevel()-1)
 		
 		local texture = Reputation:CreateTexture(nil)
@@ -923,14 +910,16 @@ local aStyle = function(self, unit)
 				
 		Reputation:SetScript("OnHide", function(self, ...)
 			--self:SetHeight(1)
-			self:GetParent().Experience:ClearAllPoints()
-			self:GetParent().Experience:SetPoint("BOTTOM", self:GetParent(), "TOP", 0, 0)
+			--self:GetParent().Experience:ClearAllPoints()
+			--self:GetParent().Experience:SetPoint("BOTTOM", self:GetParent(), "TOP", 0, 0)
+			self:GetParent():RecalcStack(self, ...)
 		end)
 
 		Reputation:SetScript("OnShow", function(self, ...)
 			--self:SetHeight(7)
-			self:GetParent().Experience:ClearAllPoints()
-			self:GetParent().Experience:SetPoint("BOTTOM", self, "TOP", 0, 1)
+			--self:GetParent().Experience:ClearAllPoints()
+			--self:GetParent().Experience:SetPoint("BOTTOM", self, "TOP", 0, 1)
+			self:GetParent():RecalcStack(self, ...)
 
 		end)
 		
@@ -945,7 +934,7 @@ local aStyle = function(self, unit)
 		-- Add a background
 		local bg = Reputation:CreateTexture(nil, 'BACKGROUND')
 		bg:SetAllPoints(Reputation)
-		bg:SetTexture(0,0,0,1)
+		bg:SetTexture(0,0,0,.8)
 
 		-- Register it with oUF
 		self.Reputation = Reputation
@@ -957,13 +946,15 @@ local aStyle = function(self, unit)
 		local Experience = CreateFrame('StatusBar', nil, self)
 		Experience:SetStatusBarTexture("Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar")
 		Experience:SetStatusBarColor(0,1,1)
-		Experience:SetPoint("BOTTOM", self.Reputation, "TOP", 0, 1)
-		Experience:SetHeight(7)
+		Experience:SetPoint("BOTTOM", self.Reputation, "TOP", 0, 2)
+
 		Experience:SetWidth(self.Health:GetWidth())
 		if class == "SHAMAN" then
-			CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
+			CreateBorder(Experience, 14, .3, .3, .3, 2, 0, 2, 0, 2, 2, 2, 2, true, true)
+			Experience:SetHeight(7)
 		else
-			CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true)
+			CreateBorder(Experience, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2, true, false)
+			Experience:SetHeight(8)
 		end
 		Experience:SetFrameLevel(self:GetFrameLevel()-1)
 		
@@ -999,9 +990,12 @@ local aStyle = function(self, unit)
 			self.leftflag = true
 		end)
 		
-		Experience:SetScript("OnMouseDown", function(self, ...)
+		Experience:SetScript("OnMouseDown", function(self, button, ...)
 			self.value:SetAlpha(0)
 			self.value2:SetAlpha(1)
+			if button == "RightButton" then
+				self.value2:SetText(UnitXP('player')-UnitXPMax('player'))
+			end
 		end)
 		
 		Experience:SetScript("OnMouseUp", function(self, ...)
@@ -1011,12 +1005,20 @@ local aStyle = function(self, unit)
 			end
 		end)
 
+		Experience:SetScript("OnHide", function(self, ...)
+			self:GetParent():RecalcStack(self, ...)
+		end)
+
+		Experience:SetScript("OnShow", function(self, ...)
+			self:GetParent():RecalcStack(self, ...)
+		end)
+		
 		-- Add a background
 		local bg = Rested:CreateTexture(nil, 'BACKGROUND')
 		--bg:SetAllPoints(Experience)
 		bg:SetPoint("TOPLEFT", Experience)
-		bg:SetPoint("BOTTOMRIGHT", Experience, 0, -1)
-		bg:SetTexture(0,0,0,1)
+		bg:SetPoint("BOTTOMRIGHT", Experience, 0, -2)
+		bg:SetTexture(0,0,0,.8)
 
 		-- Register it with oUF
 		self.Experience = Experience
@@ -1030,16 +1032,17 @@ local aStyle = function(self, unit)
 		TotemBar:SetPoint("BOTTOM", oUF_paradoxPlayer.Experience, "TOP", 0, 0)
 		TotemBar:SetWidth(self.Health:GetWidth())
 		TotemBar:SetHeight(20)
+		TotemBar:SetFrameLevel(self:GetFrameLevel()-2)
 		
 		TotemBar.UpdateColors = true
 		TotemBar.AbbreviateNames = true
 		TotemBar.Destroy = true
 		
 		TotemBar.bg = TotemBar:CreateTexture(nil, "BACKGROUND")
-		TotemBar.bg:SetPoint("TOPLEFT", 3, -3)
-		TotemBar.bg:SetPoint("BOTTOMRIGHT", -3, 0)
+		TotemBar.bg:SetPoint("TOPLEFT", 2, -2)
+		TotemBar.bg:SetPoint("BOTTOMRIGHT", -2, 0)
 		TotemBar.bg:SetTexture(0,0,0, 0.8)
-		CreateBorder(TotemBar, 14, .8, 0, 0,0,0,0,0,0,14,0,14,true)
+		CreateBorder(TotemBar, 14, .3, .3, .3,2,2,2,2,2,0,2,0,true)
 		for i= 1, 4 do
 			local totem = CreateFrame("FRAME", nil, TotemBar)
 			if i==1 then
