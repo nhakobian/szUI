@@ -886,6 +886,15 @@ local aStyle = function(self, unit)
 			if parent.Reputation:IsVisible() then
 				parent.Reputation:ClearAllPoints()
 				parent.Reputation:SetPoint("BOTTOM", parent, "TOP")
+				if parent.Experience:IsVisible() or (parent.TotemBar and parent.TotemBar:IsVisible()) then
+					parent.Reputation.HasBorder[6] = 0
+					parent.Reputation.HasBorder[8] = 0
+					SetBorderVis(parent.Reputation, nil, true, nil, true)
+				else
+					parent.Reputation.HasBorder[6] = 3
+					parent.Reputation.HasBorder[8] = 3
+					SetBorderVis(parent.Reputation, nil, true, nil, false)
+				end
 			end
 			
 			if parent.Experience:IsVisible() then
@@ -956,8 +965,8 @@ local aStyle = function(self, unit)
 		end)
 		
 		--possible fix for the rep=0 on player login bug
-		Reputation:RegisterEvent("PLAYER_ALIVE", function(self, ...)
-			self.value:UpdateTag()
+		self:RegisterEvent("PLAYER_ALIVE", function(self, ...)
+			self.Reputation.value:UpdateTag()
 		end)
 		
 		-- Text display
