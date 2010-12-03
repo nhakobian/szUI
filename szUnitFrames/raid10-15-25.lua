@@ -8,7 +8,7 @@ oUF:Factory(function(self)
 	local raid = CreateFrame("FRAME", "oUF_szRaid", UIParent)
 	
 	local visibility = "custom [@raid26,exists] hide; [@raid6,exists] show;"
-	local initialw = 90
+	local initialw = 80
 	local initialh = 40
 	local padding = 0
 	

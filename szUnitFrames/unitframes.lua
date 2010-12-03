@@ -8,41 +8,75 @@ szUI.unitframes = {
 			inset = 3		
 		},
 		player = {
-			x  = 336,
-			y  = 210,
-			width = 252,
-			height = 63,
+			position = {
+				"CENTER",
+				UIParent,
+				"BOTTOMLEFT",
+				[[((pUI_ActionBar1:GetLeft()-pUI_ChatDock:GetRight())/2.0)+pUI_ChatDock:GetRight()]],
+				[[pUI_ChatDock:GetTop()+oUF_paradoxPlayer:GetHeight()/4]]
+			},
+			size = {252, 63},
 			PortraitFrame = true,
 			VehicleSwitch = true,
 			power_h = 6
 		},
 		target = {
-			width = 252,
-			height = 63,
+			position = {
+				"CENTER",
+				UIParent,
+				"BOTTOMRIGHT",
+				[[-(pUI_InfoDock:GetWidth()+((pUI_InfoDock:GetLeft()-pUI_ActionBar1:GetRight())/2.0))]],
+				[[pUI_InfoDock:GetTop()+oUF_paradoxTarget:GetHeight()/4]]
+			},
+			size = {250, 63},
 			PortraitFrame = true,
 			PortraitLeft = false,
 			power_h = 6
 		},
 		targettarget = {
-			width = 158,
-			height = 34,
+			position = {
+				"TOPLEFT",
+				[[oUF_paradoxTarget]],
+				"BOTTOMLEFT",
+				[[pfix((oUF_paradoxTarget:GetWidth()-oUF_paradoxTarget.Health:GetWidth())/2)]],
+				3
+			},
+			size = {[[pfix(oUF_paradoxTarget.Health:GetWidth())]], 34},
 			power_h = 4
 		},
 		pet = {
-			width = 158,
-			height = 34,
+			position = {
+				"TOPLEFT",
+				[[oUF_paradoxPlayer]],
+				"BOTTOMLEFT",
+				[[pfix((oUF_paradoxPlayer:GetWidth()-oUF_paradoxPlayer.Health:GetWidth())/2)]],
+				3
+			},
+			size = {[[oUF_paradoxPlayer.Health:GetWidth()]], 34},
 			power_h = 4
 		},
 		focus = {
-			width = 210,
-			height = 52,
+			position = {
+				"BOTTOMLEFT",
+				UIParent,
+				"BOTTOMLEFT",
+				0.5*42,
+				7*42
+			},
+			size = {210, 52},
 			PortraitFrame = true,
 			PortraitLeft = true,
 			power_h = 4
 		},
 		focustarget = {
-			width = 105,
-			height = 32,
+			position = {
+				"BOTTOMLEFT",
+				[[oUF_paradoxFocus]],
+				"TOPLEFT",
+				0,
+				0.25*42
+			},
+			size = {105, 32},
 			power_h = 2
 		}
 	}
@@ -146,7 +180,7 @@ oUF.Tags['sz:curxp'] = function(unit)
 	if(unit == 'pet') then
 		return ShortNumber(GetPetExperience())
 	else
-		return ShortNumber(UnitXP(unit))
+		return ShortNumber(UnitXP('player'))
 	end
 end
 oUF.TagEvents['sz:curxp'] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UNIT_PET_EXPERIENCE UPDATE_EXHAUSTION'
@@ -156,7 +190,7 @@ oUF.Tags['sz:maxxp'] = function(unit)
 		local _, max = ShortNumber(GetPetExperience())
 		return max
 	else
-		return ShortNumber(UnitXPMax(unit))
+		return ShortNumber(UnitXPMax('player'))
 	end
 end
 oUF.TagEvents['sz:maxxp'] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UNIT_PET_EXPERIENCE UPDATE_EXHAUSTION'
@@ -214,6 +248,8 @@ local PostUpdatePower = function(power, unit, min, max)
 	local smin = ""
 	local smax = ""
 
+	if not power.value then return end
+	
 	if (unit ~= "player") then
 		smin = ShortNumber(min)
 		smax = ShortNumber(max)
@@ -230,11 +266,11 @@ local PostUpdatePower = function(power, unit, min, max)
 		smin = 0
 	end
 	
-	if(unit == "player" or unit == "target" or unit=='vehicle') then
+	if(unit == "player" or unit == "target" ) then
 		if(ptype == "MANA") then
 			local r, g, b = oUF.ColorGradient(min / max, unpack(power.bg.smoothGradient or oUF.colors.smooth))
 			if min ~= max then
-				power.value:SetText(smin.."|r/"..smax.."("..floor(min / max * 100).."%)")
+				power.value:SetText(smin.."|r ("..floor(min / max * 100).."%)")
 			else
 				power.value:SetText(smax)
 			end
@@ -548,7 +584,7 @@ local aStyle = function(self, unit)
 	local portrait_offset = 0
 	local portrait_left = true
 
-	self:SetSize(settings.width, settings.height)
+	self:SetSize(_wrap(settings.size[1]), _wrap(settings.size[2]))
 	
 	if settings.PortraitFrame ~= nil then
 		PortraitFrame = settings.PortraitFrame
@@ -609,8 +645,10 @@ local aStyle = function(self, unit)
 	end
 	
 	-- Generates the Power Value String
-	self.Power.value = makeFontString(self.Power, myriad, fsize)
-	self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset-extra_padding, -(fsize)/2+1)
+	if unit == "player" or unit == "target" then
+		self.Power.value = makeFontString(self.Power, myriad, fsize)
+		self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset-extra_padding, -(fsize)/2+1)
+	end
 	
 	--Print out unit info on player/target
 	if unit == "player" or unit == "target" then
@@ -909,25 +947,24 @@ local aStyle = function(self, unit)
 		end)
 				
 		Reputation:SetScript("OnHide", function(self, ...)
-			--self:SetHeight(1)
-			--self:GetParent().Experience:ClearAllPoints()
-			--self:GetParent().Experience:SetPoint("BOTTOM", self:GetParent(), "TOP", 0, 0)
 			self:GetParent():RecalcStack(self, ...)
 		end)
 
 		Reputation:SetScript("OnShow", function(self, ...)
-			--self:SetHeight(7)
-			--self:GetParent().Experience:ClearAllPoints()
-			--self:GetParent().Experience:SetPoint("BOTTOM", self, "TOP", 0, 1)
 			self:GetParent():RecalcStack(self, ...)
 
+		end)
+		
+		--possible fix for the rep=0 on player login bug
+		Reputation:RegisterEvent("PLAYER_ALIVE", function(self, ...)
+			self.value:UpdateTag()
 		end)
 		
 		-- Text display
 		local Value = makeFontString(self.Health, myriad, 12)
 		Value:SetAllPoints(Reputation)
 		Value:SetJustifyH("CENTER")
-		self:Tag(Value, '[sz:currep] / [sz:maxrep] [sz:standing]')
+		self:Tag(Value, '[sz:currep] / [sz:maxrep]  [sz:standing]')
 		Reputation.value = Value
 		Value:SetAlpha(0)
 		
@@ -995,6 +1032,8 @@ local aStyle = function(self, unit)
 			self.value2:SetAlpha(1)
 			if button == "RightButton" then
 				self.value2:SetText(UnitXP('player')-UnitXPMax('player'))
+			else
+				self.value2:UpdateTag()
 			end
 		end)
 		
@@ -1074,7 +1113,7 @@ local aStyle = function(self, unit)
 			totem.bg = totem:CreateTexture(nil, "BACKGROUND")
 			totem.bg:SetAllPoints()
 			totem.bg:SetTexture(1, 1, 1)
-			totem.bg.multiplier = 0
+			totem.bg:SetAlpha(0.5)
 			
 		
 			TotemBar[i] = totem
@@ -1087,15 +1126,21 @@ end
 oUF:RegisterStyle('paradox', aStyle)
 oUF:Factory(function(self)
 	self:SetActiveStyle('paradox')
-	self:Spawn('player'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", szUI.unitframes.player.x, szUI.unitframes.player.y)
-	self:Spawn('target'):SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", scale(-8*42), scale(5*42))
-	--self:Spawn('targettarget'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMRIGHT", -14*42, 3.75*42-.5)
-	self:Spawn('targettarget'):SetPoint("TOPLEFT", oUF_paradoxTarget, "BOTTOMLEFT", 12, 3)
+	
+	local function punpack(...)
+		local a, b, c, d, e = unpack(...)
+		d = _wrap(d)
+		e = _wrap(e)
+		return a, b, c, d, e
+	end
+	
+	self:Spawn('player'):SetPoint(punpack(szUI.unitframes.player.position))
+	self:Spawn('target'):SetPoint(punpack(szUI.unitframes.target.position))
+	self:Spawn('targettarget'):SetPoint(punpack(szUI.unitframes.targettarget.position))
+	self:Spawn('focus'):SetPoint(punpack(szUI.unitframes.focus.position))
+	self:Spawn('focustarget'):SetPoint(punpack(szUI.unitframes.focustarget.position)) 
+	self:Spawn('pet'):SetPoint(punpack(szUI.unitframes.pet.position))
 	oUF_paradoxTargettarget:SetFrameLevel(oUF_paradoxTarget:GetFrameLevel()-1)
-	self:Spawn('focus'):SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0.5*42, 7*42)
-	self:Spawn('focustarget'):SetPoint("BOTTOMLEFT", oUF_paradoxFocus, "TOPLEFT", 0, 0.25*42) 
-	--self:Spawn('pet'):SetPoint("TOPRIGHT", oUF_paradoxPlayer, "BOTTOMRIGHT", 0, -.25*42)
-	self:Spawn('pet'):SetPoint("TOPRIGHT", oUF_paradoxPlayer, "BOTTOMRIGHT", -12, 3)
 	oUF_paradoxPet:SetFrameLevel(oUF_paradoxPlayer:GetFrameLevel()-1)
 end)
 
