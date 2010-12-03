@@ -1146,3 +1146,22 @@ end)
 
 --Adjust PopupMenus
 UnitPopupMenus["PET"] = { "PET_PAPERDOLL", "PET_RENAME", "PET_ABANDON", "PET_DISMISS", "CANCEL" };
+
+function ToggleXP()
+	if oUF_paradoxPlayer then
+		if oUF_paradoxPlayer.Experience:IsVisible() then
+			oUF_paradoxPlayer.Experience:Hide()
+		else
+			oUF_paradoxPlayer.Experience:Show()
+			if UnitLevel('player') == MAX_PLAYER_LEVEL then
+				local min, max = UnitXP('player'), UnitXPMax('player')
+				oUF_paradoxPlayer.Experience:SetMinMaxValues(0, max)
+				oUF_paradoxPlayer.Experience:SetValue(min)
+				
+				local exhaustion = unit == 'player' and GetXPExhaustion() or 0
+				oUF_paradoxPlayer.Experience.Rested:SetMinMaxValues(0, max)
+				oUF_paradoxPlayer.Experience.Rested:SetValue(math.min(min + exhaustion, max))
+			end
+		end
+	end
+end
