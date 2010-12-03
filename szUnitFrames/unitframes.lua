@@ -611,7 +611,7 @@ local aStyle = function(self, unit)
 
 		portrait_offset = self:GetWidth()*(2/7.5)				
 		self.Portrait:SetWidth(portrait_offset - 1)
-		self.Portrait:SetHeight(self:GetHeight() - inset)		
+		self.Portrait:SetHeight(self:GetHeight() - 2*inset)		
 		self.Portrait:SetFrameLevel(self:GetFrameLevel())
 		if (portrait_left == true) then
 			self.Portrait:SetPoint("TOPLEFT", inset, -inset)
