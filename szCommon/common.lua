@@ -86,3 +86,13 @@ function szCommon.ALStack:ADDON_LOADED(event, arg1, ...)
 end
 
 szCommon.ALStack:Show()
+
+
+function pfix(pos)
+	local apos = pos - floor(pos)
+	if apos > .5 then
+		return floor(pos) + 1
+	else
+		return floor(pos)
+	end
+end

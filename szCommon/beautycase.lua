@@ -31,7 +31,6 @@
 
 --RAID_CLASS_COLORS["PRIEST"] = { r = 0.659, g = 0.843, b = 1 }
 
-local Shadow = {}
 local textureNormal = 'Interface\\AddOns\\szCommon\\media\\textureNormal'
 local textureShadow = 'Interface\\AddOns\\szCommon\\media\\textureShadow'
 
@@ -53,16 +52,16 @@ function CreateBorder(self, borderSize, R, G, B, ...)
 			self.Border[6]:Hide() 
 			self.Border[3]:Hide() 
 			self.Border[4]:Hide() 
-			bL2 = borderSize
-			bR2 = borderSize
+			bL2 = borderSize + bL2
+			bR2 = borderSize + bR2
 		end
 
 		if noTop == true then 
 			self.Border[1]:Hide() 
 			self.Border[2]:Hide() 
 			self.Border[5]:Hide() 
-			uL2 = borderSize
-			uR2 = borderSize
+			uL2 = borderSize + uL2
+			uR2 = borderSize + uR2
 		end
         
         self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
@@ -99,65 +98,65 @@ function CreateBorder(self, borderSize, R, G, B, ...)
         else
             space = borderSize/3.5
         end
+
         
+		self.Shadow = {}
+		
         for i = 1, 8 do
-            Shadow[i] = self:CreateTexture(nil, 'BORDER')
-            Shadow[i]:SetParent(self)
-            Shadow[i]:SetTexture(textureShadow)
-            Shadow[i]:SetWidth(borderSize) 
-            Shadow[i]:SetHeight(borderSize)
-            Shadow[i]:SetVertexColor(0, 0, 0, 1)
+            self.Shadow[i] = self:CreateTexture(nil, 'BORDER')
+            self.Shadow[i]:SetParent(self)
+            self.Shadow[i]:SetTexture(textureShadow)
+            self.Shadow[i]:SetWidth(borderSize) 
+            self.Shadow[i]:SetHeight(borderSize)
+            self.Shadow[i]:SetVertexColor(0, 0, 0, 1)
         end
+		
+		local bypad = 0
+		local typad = 0
+		if noBottom == true then bypad = -space end
+		if noTop == true then typad = -space end
         
-        Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-        Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space)
+        self.Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+        self.Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space+typad)
 
-        Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
-        Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space)
+        self.Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
+        self.Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space+typad)
 
-        Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
-        Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space)
+        self.Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
+        self.Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space-bypad)
 
-        Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
-        Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space)
+        self.Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
+        self.Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space-bypad)
 
-        Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-        Shadow[5]:SetPoint('TOPLEFT', Shadow[1], 'TOPRIGHT')
-        Shadow[5]:SetPoint('TOPRIGHT', Shadow[2], 'TOPLEFT')
+        self.Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
+        self.Shadow[5]:SetPoint('TOPLEFT', self.Shadow[1], 'TOPRIGHT')
+        self.Shadow[5]:SetPoint('TOPRIGHT', self.Shadow[2], 'TOPLEFT')
 
-        Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-        Shadow[6]:SetPoint('BOTTOMLEFT', Shadow[3], 'BOTTOMRIGHT')
-        Shadow[6]:SetPoint('BOTTOMRIGHT', Shadow[4], 'BOTTOMLEFT')
+        self.Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
+        self.Shadow[6]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'BOTTOMRIGHT')
+        self.Shadow[6]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'BOTTOMLEFT')
 
-        Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-        Shadow[7]:SetPoint('TOPLEFT', Shadow[1], 'BOTTOMLEFT')
-		if noBottom == true then
-			Shadow[7]:SetPoint('BOTTOMLEFT', Shadow[3], 'TOPLEFT', 0, borderSize)
-		else
-			Shadow[7]:SetPoint('BOTTOMLEFT', Shadow[3], 'TOPLEFT')
-		end
+        self.Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
+        self.Shadow[7]:SetPoint('TOPLEFT', self.Shadow[1], 'BOTTOMLEFT')
+		self.Shadow[7]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'TOPLEFT')
         
-        Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-        Shadow[8]:SetPoint('TOPRIGHT', Shadow[2], 'BOTTOMRIGHT')
-		if noBottom == true then
-			Shadow[8]:SetPoint('BOTTOMRIGHT', Shadow[4], 'TOPRIGHT', 0, borderSize)
-		else
-			Shadow[8]:SetPoint('BOTTOMRIGHT', Shadow[4], 'TOPRIGHT')
-		end
+        self.Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
+        self.Shadow[8]:SetPoint('TOPRIGHT', self.Shadow[2], 'BOTTOMRIGHT')
+		self.Shadow[8]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'TOPRIGHT')
         
 		if noBottom == true then 
-			Shadow[6]:Hide() 
-			Shadow[3]:Hide() 
-			Shadow[4]:Hide() 
+			self.Shadow[6]:Hide() 
+			self.Shadow[3]:Hide() 
+			self.Shadow[4]:Hide() 
 		end
 
 		if noTop == true then 
-			Shadow[1]:Hide() 
-			Shadow[2]:Hide() 
-			Shadow[5]:Hide() 
+			self.Shadow[1]:Hide() 
+			self.Shadow[2]:Hide() 
+			self.Shadow[5]:Hide() 
 		end
-		
-        self.HasBorder = true
+
+        self.HasBorder = {borderSize=borderSize, R=R, G=G, B=B, uL1=uL1, uL2=uL2, uR1=uR1, uR2=uR2, bL1=bL1, bL2=bL2, bR1=bR1, bR2=bR2}
     end
 end
 
@@ -175,4 +174,7 @@ function ColorBorder(self, R, G, B)
         end
         print('|cff00FF00Beautycase:|r '..name..'|cffFF0000 has no border!|r')        
     end
+end
+
+function NoTopBorder(self)
 end
