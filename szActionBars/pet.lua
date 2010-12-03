@@ -1,7 +1,7 @@
 --PetBar
 
-local iconsize = 32
-local padding = 0
+local iconsize = szUI.actionbars.iconsize
+local padding = szUI.actionbars.padding
 
 function PetBarUpdate(self, event)
 	local petActionButton, petActionIcon, petAutoCastableTexture, petAutoCastShine
@@ -55,10 +55,11 @@ function PetBarUpdate(self, event)
 			end			
 		else
 			if not TukuiCF["actionbar"].showgrid then
-				petActionButton:SetAlpha(0)
+				
 			end
 		end
 		]]--
+		--petActionButton:SetAlpha(0)
 		if texture then
 			if GetPetActionSlotUsable(i) then
 				SetDesaturation(petActionIcon, nil)
