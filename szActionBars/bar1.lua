@@ -1,7 +1,7 @@
 local settings = szUI.actionbars
 
 pUI_ActionBarAnchor = CreateFrame("FRAME", "pUI_ActionBarAnchor", UIParent, "SecureHandlerStateTemplate")
-pUI_ActionBarAnchor:SetPoint("BOTTOM", UIParent, 0, 0.25*42)
+pUI_ActionBarAnchor:SetPoint("BOTTOM", UIParent, 0, 0)--0.25*42)
 
 pUI_ActionBarBg = CreateFrame("FRAME", "pUI_ActionBarBg", pUI_ActionBarAnchor, "SecureHandlerStateTemplate")
 pUI_ActionBarBg:SetFrameStrata("MEDIUM")
