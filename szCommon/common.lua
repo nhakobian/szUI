@@ -103,7 +103,6 @@ function _wrap(func)
 		return func()
 	elseif type(func) == "string" then
 		a = assert(loadstring("return "..func))()
-		print(a)
 		return a
 	else
 		return func

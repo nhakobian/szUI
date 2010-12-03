@@ -38,7 +38,10 @@ function CreateBorder(self, borderSize, R, G, B, ...)
     local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom, noTop = ...
     
     if (not self.HasBorder) then
-        self.Border = {}
+		self.HasBorder = {borderSize, R, G, B, uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom, noTop}
+
+		self.Border = {}
+		
         for i = 1, 8 do
             self.Border[i] = self:CreateTexture(nil, 'OVERLAY')
             self.Border[i]:SetParent(self)
@@ -48,58 +51,15 @@ function CreateBorder(self, borderSize, R, G, B, ...)
             self.Border[i]:SetVertexColor(R or 1, G or 1, B or 1)
         end
 
-		if noBottom == true then 
-			self.Border[6]:Hide() 
-			self.Border[3]:Hide() 
-			self.Border[4]:Hide() 
-			bL2 = borderSize + bL2
-			bR2 = borderSize + bR2
-		end
-
-		if noTop == true then 
-			self.Border[1]:Hide() 
-			self.Border[2]:Hide() 
-			self.Border[5]:Hide() 
-			uL2 = borderSize + uL2
-			uR2 = borderSize + uR2
-		end
-        
-        self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-        self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
-
+		self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
         self.Border[2]:SetTexCoord(2/3, 1, 0, 1/3)
-        self.Border[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
-
         self.Border[3]:SetTexCoord(0, 1/3, 2/3, 1)
-        self.Border[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
-
         self.Border[4]:SetTexCoord(2/3, 1, 2/3, 1)
-        self.Border[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
-
         self.Border[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-        self.Border[5]:SetPoint('TOPLEFT', self.Border[1], 'TOPRIGHT')
-        self.Border[5]:SetPoint('TOPRIGHT', self.Border[2], 'TOPLEFT')
-
         self.Border[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-        self.Border[6]:SetPoint('BOTTOMLEFT', self.Border[3], 'BOTTOMRIGHT')
-        self.Border[6]:SetPoint('BOTTOMRIGHT', self.Border[4], 'BOTTOMLEFT')
-
         self.Border[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-        self.Border[7]:SetPoint('TOPLEFT', self.Border[1], 'BOTTOMLEFT')
-        self.Border[7]:SetPoint('BOTTOMLEFT', self.Border[3], 'TOPLEFT')
+        self.Border[8]:SetTexCoord(2/3, 1, 1/3, 2/3)		
 
-        self.Border[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-        self.Border[8]:SetPoint('TOPRIGHT', self.Border[2], 'BOTTOMRIGHT')
-        self.Border[8]:SetPoint('BOTTOMRIGHT', self.Border[4], 'TOPRIGHT')
-       
-        local space
-        if (borderSize >= 10) then
-            space = 3
-        else
-            space = borderSize/3.5
-        end
-
-        
 		self.Shadow = {}
 		
         for i = 1, 8 do
@@ -111,53 +71,108 @@ function CreateBorder(self, borderSize, R, G, B, ...)
             self.Shadow[i]:SetVertexColor(0, 0, 0, 1)
         end
 		
+        self.Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+        self.Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
+        self.Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
+        self.Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
+        self.Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
+        self.Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)		
+        self.Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)		
+        self.Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
+		
+		SetBorder(self)
+    end
+end
+
+function SetBorder(self)
+	if self.HasBorder then
+		local borderSize, R, G, B, uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom, noTop = unpack(self.HasBorder)
+
+		if noBottom == true then 
+			self.Border[6]:Hide() 
+			self.Border[3]:Hide() 
+			self.Border[4]:Hide() 
+			self.Shadow[6]:Hide() 
+			self.Shadow[3]:Hide() 
+			self.Shadow[4]:Hide() 
+
+			bL2 = borderSize + bL2
+			bR2 = borderSize + bR2
+		else
+			self.Border[6]:Show() 
+			self.Border[3]:Show() 
+			self.Border[4]:Show() 
+			self.Shadow[6]:Show() 
+			self.Shadow[3]:Show() 
+			self.Shadow[4]:Show() 
+		end
+
+		if noTop == true then 
+			self.Border[1]:Hide() 
+			self.Border[2]:Hide() 
+			self.Border[5]:Hide() 
+			self.Shadow[1]:Hide() 
+			self.Shadow[2]:Hide() 
+			self.Shadow[5]:Hide() 
+
+			uL2 = borderSize + uL2
+			uR2 = borderSize + uR2
+		else
+			self.Border[1]:Show() 
+			self.Border[2]:Show() 
+			self.Border[5]:Show() 
+			self.Shadow[1]:Show() 
+			self.Shadow[2]:Show() 
+			self.Shadow[5]:Show() 
+		end
+
+        self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
+        self.Border[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
+        self.Border[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
+        self.Border[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
+        self.Border[5]:SetPoint('TOPLEFT', self.Border[1], 'TOPRIGHT')
+        self.Border[5]:SetPoint('TOPRIGHT', self.Border[2], 'TOPLEFT')
+        self.Border[6]:SetPoint('BOTTOMLEFT', self.Border[3], 'BOTTOMRIGHT')
+        self.Border[6]:SetPoint('BOTTOMRIGHT', self.Border[4], 'BOTTOMLEFT')
+        self.Border[7]:SetPoint('TOPLEFT', self.Border[1], 'BOTTOMLEFT')
+        self.Border[7]:SetPoint('BOTTOMLEFT', self.Border[3], 'TOPLEFT')
+        self.Border[8]:SetPoint('TOPRIGHT', self.Border[2], 'BOTTOMRIGHT')
+        self.Border[8]:SetPoint('BOTTOMRIGHT', self.Border[4], 'TOPRIGHT')
+       
+        local space
+        if (borderSize >= 10) then
+            space = 3
+        else
+            space = borderSize/3.5
+        end
+		
 		local bypad = 0
 		local typad = 0
 		if noBottom == true then bypad = -space end
 		if noTop == true then typad = -space end
-        
-        self.Shadow[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+
         self.Shadow[1]:SetPoint('TOPLEFT', self, -(uL1 or 0)-space, (uL2 or 0)+space+typad)
-
-        self.Shadow[2]:SetTexCoord(2/3, 1, 0, 1/3)
         self.Shadow[2]:SetPoint('TOPRIGHT', self, (uR1 or 0)+space, (uR2 or 0)+space+typad)
-
-        self.Shadow[3]:SetTexCoord(0, 1/3, 2/3, 1)
         self.Shadow[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0)-space, -(bL2 or 0)-space-bypad)
-
-        self.Shadow[4]:SetTexCoord(2/3, 1, 2/3, 1)
         self.Shadow[4]:SetPoint('BOTTOMRIGHT', self, (bR1 or 0)+space, -(bR2 or 0)-space-bypad)
-
-        self.Shadow[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
         self.Shadow[5]:SetPoint('TOPLEFT', self.Shadow[1], 'TOPRIGHT')
         self.Shadow[5]:SetPoint('TOPRIGHT', self.Shadow[2], 'TOPLEFT')
-
-        self.Shadow[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
         self.Shadow[6]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'BOTTOMRIGHT')
         self.Shadow[6]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'BOTTOMLEFT')
-
-        self.Shadow[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
         self.Shadow[7]:SetPoint('TOPLEFT', self.Shadow[1], 'BOTTOMLEFT')
 		self.Shadow[7]:SetPoint('BOTTOMLEFT', self.Shadow[3], 'TOPLEFT')
-        
-        self.Shadow[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
         self.Shadow[8]:SetPoint('TOPRIGHT', self.Shadow[2], 'BOTTOMRIGHT')
 		self.Shadow[8]:SetPoint('BOTTOMRIGHT', self.Shadow[4], 'TOPRIGHT')
-        
-		if noBottom == true then 
-			self.Shadow[6]:Hide() 
-			self.Shadow[3]:Hide() 
-			self.Shadow[4]:Hide() 
-		end
+	end
+end
 
-		if noTop == true then 
-			self.Shadow[1]:Hide() 
-			self.Shadow[2]:Hide() 
-			self.Shadow[5]:Hide() 
-		end
-
-        self.HasBorder = {borderSize=borderSize, R=R, G=G, B=B, uL1=uL1, uL2=uL2, uR1=uR1, uR2=uR2, bL1=bL1, bL2=bL2, bR1=bR1, bR2=bR2}
-    end
+function SetBorderVis(self, noLeft, noBottom, noRight, noTop)
+	if (self.HasBorder) then
+		noLeft, noRight = nil, nil -- not implemented yet
+		if noBottom ~= nil then	self.HasBorder[13] = noBottom end
+		if noTop    ~= nil then self.HasBorder[14] = noTop end
+		SetBorder(self)
+	end
 end
 
 function ColorBorder(self, R, G, B)
@@ -174,7 +189,4 @@ function ColorBorder(self, R, G, B)
         end
         print('|cff00FF00Beautycase:|r '..name..'|cffFF0000 has no border!|r')        
     end
-end
-
-function NoTopBorder(self)
 end
