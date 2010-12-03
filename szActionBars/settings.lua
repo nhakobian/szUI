@@ -3,7 +3,7 @@ if szUI == nil then
 end
 
 szUI.actionbars = {
-		iconsize = 32,
+		iconsize = 30,
 		padding = 0,
 		alpha = 0.8,
 		

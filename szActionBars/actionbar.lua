@@ -1,5 +1,5 @@
 szCommon:EventDebug("szActionBars")
-
+local settings = szUI.actionbars
 function style(self)
 	local name = self:GetName()
 	if name:match("MultiCastActionButton") then return end
@@ -101,8 +101,8 @@ local gtable = {
 }
 
 function MakeABCube(parentframe, templatebutton, ncolumns, nrows, anchor, xoff, yoff)
-	local iconsize = 32
-	local padding = 0
+	--l--ocal iconsize = 32
+	-- local padding = 0
 	
 	if (anchor ~= "TOPLEFT") and (anchor ~= "TOPRIGHT") and (anchor ~= "BOTTOMLEFT") and (anchor ~= "BOTTOMRIGHT") then
 		error("Anchor must be TOP/BOTTOM + LEFT/RIGHT")
@@ -116,7 +116,7 @@ function MakeABCube(parentframe, templatebutton, ncolumns, nrows, anchor, xoff, 
 			button = _G[templatebutton..n]
 			
 			button:ClearAllPoints()
-			button:SetSize(iconsize, iconsize)
+			button:SetSize(settings.iconsize, settings.iconsize)
 			button:SetParent(parentframe)
 
 			if j == 1 then
@@ -124,11 +124,11 @@ function MakeABCube(parentframe, templatebutton, ncolumns, nrows, anchor, xoff, 
 				if i == 1 then
 					button:SetPoint(anchor, parentframe, xoff, yoff)
 				else
-					button:SetPoint(gtable[anchor][1], p, gtable[anchor][2], gtable[anchor][3]*padding, 0)
+					button:SetPoint(gtable[anchor][1], p, gtable[anchor][2], gtable[anchor][3]*settings.padding, 0)
 				end
 			else
 				pr = _G[templatebutton..n-NCOL]
-				button:SetPoint(gtable[anchor][4], pr, gtable[anchor][5], 0, gtable[anchor][6]*padding )
+				button:SetPoint(gtable[anchor][4], pr, gtable[anchor][5], 0, gtable[anchor][6]*settings.padding )
 			end
 		end
 	end	
