@@ -151,8 +151,8 @@ local function SetupChatPosAndFont(self)
 		-- well... tukui font under fontsize 12 is unreadable.
 		--if fontSize < 12 then		
 			FCF_SetChatWindowFontSize(nil, chat, 12)
-		--	local fontFile, unused, fontFlags = chat:GetFont();
-		--	chat:SetFont("Interface\\AddOns\\paradoxUI\\media\\expressway.ttf", fontSize, fontFlags);
+			local fontFile, unused, fontFlags = chat:GetFont();
+			chat:SetFont("Interface\\Addons\\szUnitFrames\\media\\myriad.ttf", fontSize, fontFlags);
 		--else
 		--	FCF_SetChatWindowFontSize(nil, chat, fontSize)
 		--end
@@ -164,6 +164,8 @@ local function SetupChatPosAndFont(self)
 			chat:ClearAllPoints()
 			chat:SetPoint("BOTTOMLEFT", pUI_ChatDock, 5, 5)
 			chat:SetPoint("TOPRIGHT", pUI_ChatDock, -5, -5)
+			chat:SetWidth(pUI_ChatDock:GetWidth()-10)
+			chat:SetHeight(pUI_ChatDock:GetHeight()-10)
 			FCF_SavePositionAndDimensions(chat)
 		--elseif i == 4 and name == "Loot" then
 		--	if not chat.isDocked then
