@@ -96,3 +96,17 @@ function pfix(pos)
 		return floor(pos)
 	end
 end
+
+--function wrapper for settings
+function _wrap(func)
+	if type(func) == "function" then
+		return func()
+	elseif type(func) == "string" then
+		a = assert(loadstring("return "..func))()
+		print(a)
+		return a
+	else
+		return func
+	end
+end
+
