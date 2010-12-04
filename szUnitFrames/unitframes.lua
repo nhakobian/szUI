@@ -598,10 +598,11 @@ local aStyle = function(self, unit)
 	
 	if (unit == "pet") then
 		self:RegisterEvent("UNIT_PET", function(self, unit, ...)
-			if self.Name then self.Name:UpdateTag(self.unit) end
+			self.Name:UpdateTag()
 		end)
-		self:RegisterEvent("PLAYER_ALIVE", function(self, unit, ...)
-			if self.Name then self.Name:UpdateTag(self.unit) end
+		self:RegisterEvent("UNIT_NAME_UPDATE", function(self, event, unit, ...)
+			self.Name:UpdateTag()
+		
 		end)
 	end
 
