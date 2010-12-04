@@ -799,18 +799,19 @@ local aStyle = function(self, unit)
 			self.Time:SetText(("%.1f |cffaf5050%s %.1f|r / %.1f"):format(self.channeling and duration or self.max - duration, self.channeling and "-" or "+", self.delay, self.max))
 		end
 			
-		castbar.Time = SetFontString(castbar, font, fontsize, "OUTLINE")
-		castbar.Time:SetPoint("RIGHT", castbar, "RIGHT", -4, 0)
+		castbar.Time = SetFontString(castbar, myriad, fontsize, "OUTLINE")
+		castbar.Time:SetPoint("RIGHT", castbar, "RIGHT", -inset, 0)
 		castbar.Time:SetTextColor(1, 1, 1)
 		castbar.Time:SetJustifyH("RIGHT")
 
-		castbar.Text = SetFontString(castbar, font, fontsize, "OUTLINE")
-		castbar.Text:SetPoint("LEFT", castbar, "LEFT", 4, 0)
+		castbar.Text = SetFontString(castbar, myriad, fontsize, "OUTLINE")
+		castbar.Text:SetPoint("LEFT", castbar, "LEFT", inset, 0)
+		castbar.Text:SetPoint("RIGHT", castbar.Time, "LEFT", -inset, 0)
 		castbar.Text:SetTextColor(1, 1, 1)
 			
 		castbar.lag = castbar:CreateTexture(nil)
 		castbar.lag:SetTexture(.6, 0, 0, 1)
-		castbar.lagstring = SetFontString(castbar, font, fontsize-4)
+		castbar.lagstring = SetFontString(castbar, myriad, fontsize-4)
 		castbar.lagstring:SetTextColor(.65, .65, .65)
 		castbar.lagstring:SetPoint("TOPRIGHT", castbar.lag, "BOTTOMRIGHT", -5, 5)
 			
