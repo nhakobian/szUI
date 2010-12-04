@@ -16,7 +16,7 @@ oUF:Factory(function(self)
 		"showParty", true, 
 		"showPlayer", true, 
 		--"showRaid", true, 
-		"showSolo", true,
+		--"showSolo", true,
 		--"groupFilter", "PARTY", 
 		--"groupingOrder", "7",
 		"sortMethod", "INDEX",

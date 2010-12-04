@@ -647,13 +647,13 @@ local aStyle = function(self, unit)
 	-- Generates the Power Value String
 	if unit == "player" or unit == "target" then
 		self.Power.value = makeFontString(self.Power, myriad, fsize)
-		self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset-extra_padding, -(fsize)/2+1)
+		self.Power.value:SetPoint("BOTTOMRIGHT", self.Health, -inset-extra_padding, -(fsize)/2)
 	end
 	
 	--Print out unit info on player/target
 	if unit == "player" or unit == "target" then
 		self.Power.info = makeFontString(self.Power, myriad, fsize)
-		self.Power.info:SetPoint("BOTTOMLEFT", self.Health, inset, -(fsize)/2+1)
+		self.Power.info:SetPoint("BOTTOMLEFT", self.Health, inset, -(fsize)/2)
 		self.Power.info:SetPoint("RIGHT", self.Power.value, "LEFT", -2, 0)
 		self.Power.info:SetJustifyH("LEFT")
 		self:Tag(self.Power.info, "[difficulty][smartlevel][ >classification]|r[ >race][raidcolor][ >smartclass]|r")
