@@ -16,6 +16,7 @@ szFonts:SetScript("OnEvent", function(self, event, addon)
 	
 	--local NORMAL     = TukuiCF.media.font
 	local COMBAT     = [[Interface\AddOns\szUI\media\combat_font.ttf]]
+	
 	--local NUMBER     = TukuiCF.media.font	
 
 	--UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12
@@ -59,9 +60,10 @@ szFonts:SetScript("OnEvent", function(self, event, addon)
 
 	--hooksecurefunc("PlayerTitleFrame_UpdateTitles", FixTitleFont)
 	--FixTitleFont()
-
 	SetFont = nil
 	self:SetScript("OnEvent", nil)
 	self:UnregisterAllEvents()
 	self = nil
 end)
+
+--Watchframe font changed in the watchframe section due to its special nature.
