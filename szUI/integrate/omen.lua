@@ -1,5 +1,6 @@
 
 --Integration for Omen
+LibStub("LibSharedMedia-3.0"):Register("font", "Myriad",  "Interface\\Addons\\szUnitFrames\\media\\myriad.ttf")
 
 local defaults = {
 	profile = {
@@ -10,10 +11,10 @@ local defaults = {
 		NumBars      = 10,
 		CollapseHide = false,
 		Locked       = true, --changed
-		PositionW    = 200,
+		PositionW    = 100,
 		PositionH    = 82,
 		VGrip1       = 75,
-		VGrip2       = 115,
+		VGrip2       = 110,
 		UseFocus     = false,
 		IgnorePlayerPets = true,
 		FrameStrata = "3-MEDIUM",
@@ -31,10 +32,10 @@ local defaults = {
 		},
 		TitleBar = {
 			Height = 16,
-			Font = "Friz Quadrata TT",
+			Font = "Myriad",
 			FontOutline = "",
 			FontColor = {r = 1, g = 1, b = 1, a = 1,},
-			FontSize = 10,
+			FontSize = 12,
 			ShowTitleBar = false, --changed
 			UseSameBG = true,
 			Texture = "Blizzard Parchment",
@@ -48,13 +49,13 @@ local defaults = {
 		Bar = {
 			Texture = "Armory", --Changed
 			Height = 12,
-			Spacing = 0,
+			Spacing = 2,
 			AnimateBars  = true,
 			ShortNumbers = true,
-			Font = "Friz Quadrata TT",
+			Font = "Myriad",
 			FontOutline = "Outline", --Changed
 			FontColor = {r = 1, g = 1, b = 1, a = 1,},
-			FontSize = 10,
+			FontSize = 12,
 			Classes = {
 				DEATHKNIGHT = true,
 				DRUID = true,
@@ -97,7 +98,7 @@ local defaults = {
 			Raid = true,
 			-- Deprecated SV values
 			-- Resting = false, PVP = false, Dungeon = true, ShowOnlyInCombat = false,
-			HideWhileResting = true,
+			HideWhileResting = false,
 			HideInPVP = true,
 			HideWhenOOC = false,
 		},
@@ -131,6 +132,7 @@ omenframe:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 		OmenAnchor:SetParent(omenframe)
 		local width = pUI_InfoDock:GetWidth()/2.0
+		defaults.profile.PositionW = width
 		Omen.db:SetProfile("Default")
 		Omen.db:RegisterDefaults(defaults)
 		Omen.db:ResetProfile()

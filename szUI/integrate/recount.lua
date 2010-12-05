@@ -4,6 +4,12 @@ recountframe:SetParent(pUI_InfoDock)
 
 recountframe:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
+		--hooksecurefunc(Recount, "AddFontString", function(self, string)
+		--	local Font, Height, Flags = string:GetFont()
+		--	string:SetFont(Font, Height, "OUTLINE")
+		--
+		--end)
+	
 		local width = pUI_InfoDock:GetWidth()/2.0
 		recountframe:ClearAllPoints()
 		recountframe:SetPoint("TOPLEFT", pUI_InfoDock, "TOPLEFT", width, 0)

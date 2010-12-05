@@ -177,8 +177,9 @@ local function SetupChatPosAndFont(self)
 		end
 	end
 	
-	FriendsMicroButton:ClearAllPoints()
-	FriendsMicroButton:SetPoint("TOPRIGHT", pUI_ChatDock, "TOPRIGHT", 3, -2)	
+	--FriendsMicroButton:ClearAllPoints()
+	--FriendsMicroButton:SetPoint("TOPRIGHT", pUI_ChatDock, "TOPRIGHT", 3, -2)	
+	FriendsMicroButton:Hide()
 		
 	-- reposition battle.net popup over chat #1
 	BNToastFrame:HookScript("OnShow", function(self)
