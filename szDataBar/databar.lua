@@ -2,7 +2,7 @@
 
 oUF.Tags['sz:gold'] = function()
 	local copper = GetMoney()
-	local text = ("%d|TInterface\\MoneyFrame\\UI-GoldIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-SilverIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-CopperIcon.png:0|t|c00000000X|||r"):format(copper / 100 / 100, (copper / 100) % 100, copper % 100)
+	local text = ("%d|TInterface\\MoneyFrame\\UI-GoldIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-SilverIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-CopperIcon.png:0|t|cffff0000   |r"):format(copper / 100 / 100, (copper / 100) % 100, copper % 100)
 	return text
 end
 oUF.TagEvents['sz:gold'] = "PLAYER_MONEY"
@@ -47,7 +47,29 @@ oUF.Tags['sz:guild'] = function()
 end
 oUF.TagEvents['sz:guild'] = "GUILD_ROSTER_UPDATE"
 oUF.UnitlessTagEvents.GUILD_ROSTER_UPDATE = true
---oUF.UnitlessTagEvents.PLAYER_ALIVE = true
+
+--[[
+61 	 Dalaran Jewelcrafter's Token
+81 	Dalaran Cooking Award
+241 	Champion's Seal
+390 	Conquest Points
+392 	Honor Points
+395 	Justice Points
+402 	Chef's Awards
+]]--
+
+oUF.Tags['sz:jp'] = function()
+	local label, amount, iconfile = GetCurrencyInfo(395)
+	return "|TInterface\\Icons\\"..iconfile..":0|t"..amount
+end
+oUF.TagEvents['sz:jp'] = "CURRENCY_DISPLAY_UPDATE"
+
+oUF.Tags['sz:honor'] = function()
+	local label, amount, iconfile = GetCurrencyInfo(392)
+	return "|TInterface\\Icons\\"..iconfile..":0|t"..amount
+end	
+oUF.TagEvents['sz:honor'] = "CURRENCY_DISPLAY_UPDATE"
+oUF.UnitlessTagEvents.CURRENCY_DISPLAY_UPDATE = true
 
 local makeFontString = function(frame, font, size, ...)
 	local outline, justifyh, justifyv = ...
@@ -107,6 +129,10 @@ local function data(self, unit)
 	self.gold = makeFontString(self, myriad, 14)
 	self.gold:SetPoint("LEFT", self)
 	self:Tag(self.gold, '[sz:gold]')
+	
+	self.points = makeFontString(self, myriad, 14)
+	self.points:SetPoint("LEFT", self.gold, "RIGHT")
+	self:Tag(self.points, '[sz:jp][sz:honor]')
 
 	self.memory = makeFontString(self, myriad, 14)
 	self.memory:SetPoint("RIGHT", self, "RIGHT")
