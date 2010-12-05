@@ -30,6 +30,25 @@ oUF.Tags['sz:memory'] = function()
 	return ("%.2f MiB"):format(gcinfo()/1024)
 end
 
+oUF.Tags['sz:bn'] = function()
+	if BNConnected() then
+		local total, online = BNGetNumFriends()
+		return ("|TInterface\\FriendsFrame\\UI-Toast-FriendOnlineIcon:0|t"..online.."/"..total)
+	else
+		return("|TInterface\\FriendsFrame\\UI-Toast-FriendOnlineIcon:0|tdc")
+	end
+end
+oUF.TagEvents['sz:bn'] = "BN_FRIEND_INVITE_ADDED BN_FRIEND_ACCOUNT_OFFLINE BN_FRIEND_ACCOUNT_ONLINE BN_CONNECTED BN_DISCONNECTED"
+
+oUF.Tags['sz:guild'] = function()
+	local total, online = GetNumGuildMembers()
+	local faction, _ = UnitFactionGroup('player')
+	return "|TInterface\\FriendsFrame\\PlusManz-"..faction..":0|t"..online.."/"..total
+end
+oUF.TagEvents['sz:guild'] = "GUILD_ROSTER_UPDATE"
+oUF.UnitlessTagEvents.GUILD_ROSTER_UPDATE = true
+--oUF.UnitlessTagEvents.PLAYER_ALIVE = true
+
 local makeFontString = function(frame, font, size, ...)
 	local outline, justifyh, justifyv = ...
 	
@@ -88,21 +107,54 @@ local function data(self, unit)
 	self.gold = makeFontString(self, myriad, 14)
 	self.gold:SetPoint("LEFT", self)
 	self:Tag(self.gold, '[sz:gold]')
+
+	self.memory = makeFontString(self, myriad, 14)
+	self.memory:SetPoint("RIGHT", self, "RIGHT")
+	self.memory.frequentUpdates = 1
+	self:Tag(self.memory, '[sz:memory]')
+
+	self.framerate = makeFontString(self, myriad, 14)
+	self.framerate:SetPoint("RIGHT", self.memory, "LEFT", 0, 0)
+	self.framerate.frequentUpdates = .25
+	self:Tag(self.framerate, '[sz:framerate]')
 	
 	self.latency = makeFontString(self, myriad, 14)
-	self.latency:SetPoint("LEFT", self.gold, "RIGHT", 0, 0)
+	self.latency:SetPoint("RIGHT", self.framerate, "LEFT", 0, 0)
 	self.latency.frequentUpdates = 30
 	self:Tag(self.latency, '[sz:latency]')
 
-	self.framerate = makeFontString(self, myriad, 14)
-	self.framerate:SetPoint("LEFT", self.latency, "RIGHT", 0, 0)
-	self.framerate.frequentUpdates = .25
-	self:Tag(self.framerate, '[sz:framerate]')
 
-	self.memory = makeFontString(self, myriad, 14)
-	self.memory:SetPoint("LEFT", self.framerate, "RIGHT")
-	self.memory.frequentUpdates = 1
-	self:Tag(self.memory, '[sz:memory]')
+	
+	self.bn_frame = CreateFrame("Frame", nil, self)
+	self.bn = makeFontString(self.bn_frame, myriad, 14)
+	self.bn:SetPoint("RIGHT", self, "CENTER")
+	self.bn_frame:SetAllPoints(self.bn)
+	self:Tag(self.bn, '[sz:bn]')
+	self.bn_frame:SetScript("OnMouseUp", function(self, button, ...)
+		if button == "LeftButton" then
+			ToggleFriendsFrame()
+		end
+	end)
+	
+	self.guild_frame = CreateFrame("Frame", nil, self)
+	self.guild = makeFontString(self.guild_frame, myriad, 14)
+	self.guild:SetPoint("LEFT", self, "CENTER")
+	self.guild_frame:SetAllPoints(self.guild)
+	self:Tag(self.guild, '[sz:guild]')
+	self.guild_frame:SetScript("OnMouseUp", function(self, button, ...)
+		if button == "LeftButton" then
+			ToggleGuildFrame()
+		end
+	end)
+	
+
+	--LoadAddOn("Blizzard_GuildUI")
+	--hooksecurefunc("GuildFrame_OnEvent", function(...)
+		--force the update here so it doesnt fire before the guild fontstring has
+		--been setup
+	--	print("updateguildinfo")
+	--	self.guild:UpdateTag()
+	--end)
 	
 	self:SetSize(200, 20)
 end
@@ -112,4 +164,6 @@ oUF:Factory(function(self)
 	self:SetActiveStyle('szDataBar')
 	
 	self:Spawn('player'):SetPoint("LEFT", szDataPanel, 6, -2)
+	oUF_szDataBarPlayer:SetPoint("RIGHT", szDataPanel, -6, -2)
+	
 end)
