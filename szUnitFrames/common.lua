@@ -209,7 +209,7 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	--self.PhaseIcon = picon
 
 	local range = {insideAlpha = 1, outsideAlpha = .3}
-	--self.Range = range
+	self.Range = range
 	
 	--heal prediction
 	local myheals = CreateFrame('StatusBar', self:GetName().."myheals", self.Health)
