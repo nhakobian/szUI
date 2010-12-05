@@ -38,7 +38,7 @@ function CreateBorder(self, borderSize, R, G, B, ...)
     local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom, noTop = ...
     
     if (not self.HasBorder) then
-		self.HasBorder = {borderSize, R, G, B, uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2, noBottom, noTop}
+		self.HasBorder = {borderSize, R, G, B, uL1 or 0, uL2 or 0, uR1 or 0, uR2 or 0, bL1 or 0, bL2 or 0, bR1 or 0, bR2 or 0, noBottom, noTop}
 
 		self.Border = {}
 		
