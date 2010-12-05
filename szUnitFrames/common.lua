@@ -264,7 +264,15 @@ function szUnitFrames.PartyTargets(self, unit)
 	self:SetBackdropColor(0, 0, 0)
 	self:SetBackdropBorderColor(0, 0, 0)
 
-	CreateBorder(self, 14, .3, .3, .3)
+	if string.find(unit, 'party%dtarget') or unit =='playertarget' then 
+		CreateBorder(self, 14, .3, .3, .3)
+		SetBorderVis(self, nil, true, nil, nil)
+	elseif string.find(unit, 'partypet%d') or unit == 'playerpet' then
+		CreateBorder(self, 14, .3, .3, .3)
+		SetBorderVis(self, nil, nil, nil, true)
+	else
+		CreateBorder(self, 14, .3, .3, .3)
+	end
 	
 	local health = CreateFrame('StatusBar', nil, self)
 

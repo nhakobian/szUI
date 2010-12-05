@@ -11,8 +11,8 @@ oUF:Factory(function(self)
 			self:SetWidth(header:GetAttribute('initial-width'))
 			self:SetHeight(header:GetAttribute('initial-height'))
 		]],
-		'initial-width', 90,
-		'initial-height', 42,	
+		'initial-width', 85,
+		'initial-height', 40,	
 		"showParty", true, 
 		"showPlayer", true, 
 		--"showRaid", true, 
@@ -40,22 +40,22 @@ oUF:Factory(function(self)
 	do
 		pets[1] = oUF:Spawn('playerpet') 
 
-		pets[1]:SetSize(90, 25)
+		pets[1]:SetSize(79, 25)
 	end
 	for i = 1, 4 do 
 		pets[i+1] = oUF:Spawn('partypet'..i)
-		pets[i+1]:SetSize(90, 25)
+		pets[i+1]:SetSize(79, 25)
 	end
 
 	oUF:SetActiveStyle("szGroupTargets")
 
 	do
 		partytargets[1] = oUF:Spawn('player'..'target')
-		partytargets[1]:SetSize(90,25)
+		partytargets[1]:SetSize(79,25)
 	end
 	for i = 1, 4 do
 		partytargets[i+1] = oUF:Spawn('party'..i..'target')
-		partytargets[i+1]:SetSize(90,25)
+		partytargets[i+1]:SetSize(79,25)
 	end
 end)
 
@@ -70,17 +70,21 @@ PartyFrames:SetScript("OnEvent", function(self)
 	else
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 
-		pets[1]:SetPoint('TOP', oUF_szGroupUnitButton1, 'BOTTOM', 0, -2)
-		partytargets[1]:SetPoint("BOTTOM", oUF_szGroupUnitButton1, "TOP", 0, 2)
-		partytargets[1]:SetParent(oUF_szGroupUnitButton1)
-		pets[1]:SetParent(oUF_szGroupUnitButton1)
+		--pets[1]:SetPoint('TOP', oUF_szGroupUnitButton1, 'BOTTOM', 0, 3)
+		--partytargets[1]:SetPoint("BOTTOM", oUF_szGroupUnitButton1, "TOP", 0, -3)
+		--partytargets[1]:SetParent(oUF_szGroupUnitButton1)
+		--pets[1]:SetParent(oUF_szGroupUnitButton1)
 		
-		for i= 1, 4 do
-			local parent = _G["oUF_szGroupUnitButton"..i+1]	
-			partytargets[i+1]:SetParent(parent)
-			pets[i+1]:SetParent(parent)
-			pets[i+1]:SetPoint('TOP', parent, 'BOTTOM', 0, -2)			
-			partytargets[i+1]:SetPoint("BOTTOM", parent, "TOP", 0, 2)			
+		for i= 1, 5 do
+			local parent = _G["oUF_szGroupUnitButton"..i]
+			if parent ~= nil then
+			partytargets[i]:SetParent(parent)
+			pets[i]:SetParent(parent)
+			pets[i]:SetPoint('TOP', parent, 'BOTTOM', 0, 3)			
+			partytargets[i]:SetPoint("BOTTOM", parent, "TOP", 0, -3)
+			partytargets[i]:SetFrameLevel(parent:GetFrameLevel()-1)
+			pets[i]:SetFrameLevel(parent:GetFrameLevel()-1)
+			end
 		end
 	end
 end)	
