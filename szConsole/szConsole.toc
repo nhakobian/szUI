@@ -1,6 +1,8 @@
 ## Interface: 40000
-## Title: szCommon
-## Notes: Common elements for szUI 
+## Title: szConsole
+## Notes: LUA Console for debuggers/devs/power users
 
-common.lua
-beautycase.lua
+settings.lua
+
+console.lua
+test.lua
