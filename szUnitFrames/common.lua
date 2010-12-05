@@ -169,8 +169,8 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 		
 	local name = self.Health:CreateFontString(nil, 'OVERLAY')
 	name:SetFont(font, 12, "THINOUTLINE")
-	name:SetPoint("TOPLEFT", self, frameinset, -2*frameinset)
-	name:SetPoint("TOPRIGHT", self, -frameinset+3, -2*frameinset)
+	name:SetPoint("TOPLEFT", self, frameinset, -3*frameinset)
+	name:SetPoint("TOPRIGHT", self, -frameinset+3, -3*frameinset)
 	name:SetShadowOffset(1,-1)
 	name:SetHeight(10)
 	name.colorClass = true
@@ -209,7 +209,7 @@ function szUnitFrames.LargeButtonStyle(self, unit)
 	--self.PhaseIcon = picon
 
 	local range = {insideAlpha = 1, outsideAlpha = .3}
-	self.Range = range
+	--self.Range = range
 	
 	--heal prediction
 	local myheals = CreateFrame('StatusBar', self:GetName().."myheals", self.Health)

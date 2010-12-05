@@ -9,11 +9,16 @@ szUI.unitframes = {
 		},
 		player = {
 			position = {
-				"CENTER",
-				UIParent,
+				--"CENTER",
+				--UIParent,
+				--"BOTTOMLEFT",
+				--[[((pUI_ActionBar1:GetLeft()-pUI_ChatDock:GetRight())/2.0)+pUI_ChatDock:GetRight()]]--,
+				--[[pUI_ChatDock:GetTop()+oUF_paradoxPlayer:GetHeight()/4]]
 				"BOTTOMLEFT",
-				[[((pUI_ActionBar1:GetLeft()-pUI_ChatDock:GetRight())/2.0)+pUI_ChatDock:GetRight()]],
-				[[pUI_ChatDock:GetTop()+oUF_paradoxPlayer:GetHeight()/4]]
+				"pUI_ChatDock",
+				"TOPRIGHT",
+				[[-(oUF_paradoxPlayer:GetWidth()-oUF_paradoxPlayer.Health:GetWidth())/4]],
+				[[(oUF_paradoxPlayer:GetWidth()-oUF_paradoxPlayer.Health:GetWidth())/4]]
 			},
 			size = {252, 63},
 			PortraitFrame = true,
@@ -22,11 +27,16 @@ szUI.unitframes = {
 		},
 		target = {
 			position = {
-				"CENTER",
-				UIParent,
+				--"CENTER",
+				--UIParent,
+				--"BOTTOMRIGHT",
+				--[[-(pUI_InfoDock:GetWidth()+((pUI_InfoDock:GetLeft()-pUI_ActionBar1:GetRight())/2.0))]]--,
+				--[[pUI_InfoDock:GetTop()+oUF_paradoxTarget:GetHeight()/4--]]
 				"BOTTOMRIGHT",
-				[[-(pUI_InfoDock:GetWidth()+((pUI_InfoDock:GetLeft()-pUI_ActionBar1:GetRight())/2.0))]],
-				[[pUI_InfoDock:GetTop()+oUF_paradoxTarget:GetHeight()/4]]
+				"pUI_InfoDock",
+				"TOPLEFT",
+				[[(oUF_paradoxTarget:GetWidth()-oUF_paradoxTarget.Health:GetWidth())/4]],
+				[[(oUF_paradoxTarget:GetWidth()-oUF_paradoxTarget.Health:GetWidth())/4]]
 			},
 			size = {250, 63},
 			PortraitFrame = true,

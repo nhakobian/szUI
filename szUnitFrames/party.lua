@@ -5,24 +5,24 @@ local partytargets = {}
 oUF:Factory(function(self)
 	oUF:SetActiveStyle("szGroup")
 
-	local raid = self:SpawnHeader("oUF_szGroup", nil, "party,solo",
+	local raid = self:SpawnHeader("oUF_szGroup", nil, "party,solo,raid",
 		'oUF-initialConfigFunction', [[
 			local header = self:GetParent()
 			self:SetWidth(header:GetAttribute('initial-width'))
 			self:SetHeight(header:GetAttribute('initial-height'))
 		]],
-		'initial-width', 85,
-		'initial-height', 40,	
+		'initial-width', 90,
+		'initial-height', 45,	
 		"showParty", true, 
 		"showPlayer", true, 
 		--"showRaid", true, 
 		--"showSolo", true,
-		--"groupFilter", "PARTY", 
+		"groupFilter", "1", 
 		--"groupingOrder", "7",
 		"sortMethod", "INDEX",
 		--"groupBy", "PARTY",
-		"point", "LEFT"
-		--"xOffset", -1,
+		"point", "LEFT",
+		"xOffset", 10
 		--"maxColumns", 8,
 		--"unitsPerColumn", 5,
 		--"columnSpacing", -3,
@@ -31,7 +31,7 @@ oUF:Factory(function(self)
 	
 	local xpos, ypos = oUF_paradoxPlayer:GetCenter()
 	local _, cypos = UIParent:GetCenter()
-	oUF_szGroup:SetPoint('CENTER', UIParent, "CENTER", 0, pfix(-(cypos-ypos)))
+	oUF_szGroup:SetPoint('LEFT', UIParent, "CENTER", -(90*5 + 10*4)/2, pfix(-(cypos-ypos)))
 	
 
 	--oUF:SetActiveStyle("szGroupPets")
