@@ -1,0 +1,6 @@
+## Interface: 40000
+## Title: szCommon
+## Notes: Common elements for szUI 
+
+common.lua
+beautycase.lua
