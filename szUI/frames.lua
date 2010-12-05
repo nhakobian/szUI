@@ -18,7 +18,7 @@ data = CreateFrame("FRAME", "szDataPanel", UIParent)
 data:SetFrameStrata("LOW")
 data:SetPoint("BOTTOM", UIParent)
 data:SetWidth(920)
-data:SetHeight(20)
+data:SetHeight(25)
 data.bkg = data:CreateTexture(nil, "BORDER")
 data.bkg:SetPoint("TOPLEFT", data, 3, -3)
 data.bkg:SetPoint("TOPRIGHT", data, -3, -3)
@@ -26,7 +26,6 @@ data.bkg:SetPoint("BOTTOM", data)
 data.bkg:SetTexture(0,0,0,.9)
 CreateBorder(data, 14, .5, 0,0)
 SetBorderVis(data, nil, true, nil, nil)
-
 
 szCommon.ALStack:Register("szActionBars", function(event, ...)
 	-- Post-hook the "PLAYER_LOGIN" event for the action bar frames to position them correctly
@@ -59,7 +58,7 @@ szCommon.ALStack:Register("szActionBars", function(event, ...)
 	pUI_ActionBarAnchor:RegisterEvent("PLAYER_LOGIN")
 	pUI_ActionBarAnchor:HookScript("OnEvent", function(self, event, ...)
 		self:ClearAllPoints()
-		self:SetPoint("CENTER", UIParent, "BOTTOM", 0, 23)
+		self:SetPoint("CENTER", UIParent, "BOTTOM", 0, 28)
 	end)
 
 	--Hide some borders
