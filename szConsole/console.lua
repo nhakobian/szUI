@@ -3,9 +3,10 @@ local inset = 3
 local szConsole = CreateFrame("FRAME", "szConsole", UIParent)
 szConsole:SetHeight(300)
 szConsole:SetPoint("LEFT", UIParent, "LEFT")
-szConsole:SetWidth(UIParent:GetWidth())
+szConsole:SetWidth(UIParent:GetWidth()/2)
 szConsole:SetFrameStrata("DIALOG")
---szConsole:Hide()
+szConsole:Hide()
+CreateBorder(szConsole, 14, .3, .3, .3, 2, 2, 2, 2, 2, 2, 2, 2)
 
 --make background
 szConsole.bkg = szConsole:CreateTexture(nil, "BORDER")
@@ -128,23 +129,30 @@ end
 --this function doesnt work right. it'll execute some code twice...do not use
 function szConsole:ProcessCommand(text)
 	if text == "" then return end
-	--Attempt to determine if the typed text is a number/string/function
-	local func, err = loadstring("return type("..text..")")
+
+	local func, err = loadstring(text)
 	local output, errorflag, value
 	
-	--if err ~= nil then print(err) end
+	if err ~= nil then 
+		szConsole.Output:origAddMessage("|cffff0000"..err.."|r") 
+		return
+	end
 
 	--tests to see if input is a variable
 	if func ~= nil then
-
 		errorflag, value = pcall(func)
 		if errorflag == false then 
-			--szConsole.Output:AddMessage("|cffff0000"..value.."|r") 
-			szConsole.Output:SetTextColor(1, 0, 0)
-			szConsole.Output:AddMessage(value)
-			szConsole.Output:SetTextColor(1,1,1)
+			szConsole.Output:AddMessage("|cffff0000"..value.."|r") 
 		else
-			if value == "string" or value == "function" or value == "number" or value == "table" or value == "boolean" then
+			print("Code ran")
+		end
+	end
+end
+
+
+
+
+--[[		if value == "string" or value == "function" or value == "number" or value == "table" or value == "boolean" then
 				--loadstring('szConsole.Output:AddMessage("|cffffff00"..'..text..'.."|r")')()
 				loadstring('szConsole.Output:origAddMessage("|cffff0000Out ["..szConsole.HistoryNum.."] : |r'..szConsole.converters[value](text)..'")\n')()
 			else
@@ -166,4 +174,4 @@ function szConsole:ProcessCommand(text)
 			end
 		end
 	end
-end
+end]]--
