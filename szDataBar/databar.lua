@@ -143,6 +143,10 @@ end
 local myriad = "Interface\\Addons\\szUnitFrames\\media\\myriad.ttf"
 
 local function data(self, unit)
+	self:SetScript("OnEnter", nil)
+	self:SetScript("OnLeave", nil)
+	self:SetScript("OnClick", nil)
+
 	self.gold = makeFontString(self, myriad, 14)
 	self.gold:SetPoint("LEFT", self)
 	self:Tag(self.gold, '[sz:gold]')
