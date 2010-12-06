@@ -11,11 +11,28 @@ oUF.UnitlessTagEvents.PLAYER_MONEY = true
 oUF.Tags['sz:latency'] = function()
 	--no event sets this use self.frequentUpdates = 30 to refresh it every 30 seconds
 	local _, _, lag = GetNetStats()
-	return lag.."ms"
+	local color
+	if lag >= 400 then 
+		color = "ff0000"
+	elseif lag > 200 then 
+		color = "ffff00"
+	else 
+		color = "00ff00"
+	end
+	return "|cff"..color..lag.."|rms"
 end
 
 oUF.Tags['sz:framerate'] = function()
-	return ("%.1ffps"):format(GetFramerate())
+	local color, value
+	value = GetFramerate()
+	if value >= 30 then 
+		color = "00ff00"
+	elseif value > 10 then 
+		color = "ffff00"
+	else 
+		color = "ff0000"
+	end
+	return ("|cff%s%.1f|rfps"):format(color, value)
 end
 
 oUF.Tags['sz:memory'] = function()
