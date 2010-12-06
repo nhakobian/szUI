@@ -5,7 +5,7 @@ local partytargets = {}
 oUF:Factory(function(self)
 	oUF:SetActiveStyle("szGroup")
 
-	local raid = self:SpawnHeader("oUF_szGroup", nil, "party,solo,raid",
+	local raid = self:SpawnHeader("oUF_szGroup", nil, "party,solo",
 		'oUF-initialConfigFunction', [[
 			local header = self:GetParent()
 			self:SetWidth(header:GetAttribute('initial-width'))

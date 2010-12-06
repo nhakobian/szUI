@@ -5,9 +5,14 @@ local partytargets = {}
 oUF:Factory(function(self)
 	oUF:SetActiveStyle("szGroup")
 
+	CompactRaidFrameManager:Hide()
+	CompactRaidFrameContainer:Hide()
+	CompactRaidFrameManager.Show = function() end
+	CompactRaidFrameContainer.Show = function() end
+	
 	local raid = CreateFrame("FRAME", "oUF_szRaid", UIParent)
 	
-	local visibility = "custom [@raid26,exists] hide; [@raid6,exists] hide;"
+	local visibility = "custom [@raid26,exists] hide; [@raid6,exists] show;"
 	local initialw = 80
 	local initialh = 40
 	local padding = 0
@@ -26,7 +31,8 @@ oUF:Factory(function(self)
 		"groupingOrder", "1",
 		"sortMethod", "INDEX",
 		"groupBy", "GROUP",
-		"point", "LEFT"
+		"point", "LEFT",
+		"xoffset", 5
 	)
 	
 	local group2 = self:SpawnHeader("oUF_szGroup2", nil, visibility, 
@@ -103,8 +109,8 @@ oUF:Factory(function(self)
 	group4:SetParent(oUF_szRaid)
 	group5:SetParent(oUF_szRaid)
 
-	group1:SetPoint("TOPLEFT", group2, "BOTTOMLEFT")
-	group2:SetPoint("TOPLEFT", group3, "BOTTOMLEFT")
+	group1:SetPoint("TOPLEFT", group2, "BOTTOMLEFT", 0, -5)
+	group2:SetPoint("TOPLEFT", group3, "BOTTOMLEFT", 0, -5)
 	group3:SetPoint("LEFT", oUF_szRaid)
 	group4:SetPoint("BOTTOMLEFT", group3, "TOPLEFT")
 	group5:SetPoint("BOTTOMLEFT", group4, "TOPLEFT")
