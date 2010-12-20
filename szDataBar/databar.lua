@@ -2,7 +2,7 @@
 
 oUF.Tags['sz:gold'] = function()
 	local copper = GetMoney()
-	local text = ("%d|TInterface\\MoneyFrame\\UI-GoldIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-SilverIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-CopperIcon.png:0|t|cffff0000   |r"):format(copper / 100 / 100, (copper / 100) % 100, copper % 100)
+	local text = ("%d|TInterface\\MoneyFrame\\UI-GoldIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-SilverIcon.png:0|t%d|TInterface\\MoneyFrame\\UI-CopperIcon.png:0|t|cffff0000    |r"):format(copper / 100 / 100, (copper / 100) % 100, copper % 100)
 	return text
 end
 oUF.TagEvents['sz:gold'] = "PLAYER_MONEY"
@@ -72,6 +72,7 @@ oUF.UnitlessTagEvents.GUILD_ROSTER_UPDATE = true
 390 	Conquest Points
 392 	Honor Points
 395 	Justice Points
+396 Valor Points
 402 	Chef's Awards
 ]]--
 
@@ -86,6 +87,12 @@ oUF.Tags['sz:honor'] = function()
 	return "|TInterface\\Icons\\"..iconfile..":0|t"..amount
 end	
 oUF.TagEvents['sz:honor'] = "CURRENCY_DISPLAY_UPDATE"
+
+oUF.Tags['sz:vp'] = function()
+	local label, amount, iconfile = GetCurrencyInfo(396)
+	return "|TInterface\\Icons\\"..iconfile..":0|t"..amount
+end	
+oUF.TagEvents['sz:vp'] = "CURRENCY_DISPLAY_UPDATE"
 oUF.UnitlessTagEvents.CURRENCY_DISPLAY_UPDATE = true
 
 local makeFontString = function(frame, font, size, ...)
@@ -153,7 +160,7 @@ local function data(self, unit)
 	
 	self.points = makeFontString(self, myriad, 14)
 	self.points:SetPoint("LEFT", self.gold, "RIGHT")
-	self:Tag(self.points, '[sz:jp][sz:honor]')
+	self:Tag(self.points, '[sz:jp][sz:vp][sz:honor]')
 
 	self.memory = makeFontString(self, myriad, 14)
 	self.memory:SetPoint("RIGHT", self, "RIGHT")
