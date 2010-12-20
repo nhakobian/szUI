@@ -185,6 +185,7 @@ for tag, func in pairs({
 	oUF.Tags[tag] = func
 	oUF.TagEvents[tag] = 'UPDATE_FACTION'
 end
+oUF.UnitlessTagEvents.UPDATE_FACTION = true
 
 oUF.Tags['sz:curxp'] = function(unit)
 	if(unit == 'pet') then
