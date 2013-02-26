@@ -1,0 +1,23 @@
+## Interface: 40000
+## Title : szUI
+## Version: 0.1
+## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
+## Author: Nicholas Hakobian
+## Dependencies: szCommon
+## LoadWith: szCommon
+## OptionalDeps: Omen Recount Blizzard_TimeManager
+
+szUI.lua
+
+font.lua
+frames.lua
+reloadui.lua
+
+integrate\recount.lua
+integrate\omen.lua
+
+skin\chat.lua
+skin\chatbubbles.lua
+skin\minimap.lua
+skin\tooltips.lua
+skin\watchframe.lua
