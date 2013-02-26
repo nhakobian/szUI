@@ -1,0 +1,19 @@
+This project is the merged git contents of several older projects that depend
+on each other. They were merged together to organize git listings on github.
+This project has not been worked on in ~2 years and is provided AS-IS. It
+almost definitely does not work anymore.
+
+szMultiTooltips -  allows you to have multiple tooltips (up to 10) open at once 
+
+szActionBars - action bars module for szUI
+
+szCommon - common elements for szUI (required by all szUI mods)
+
+szConsole - LUA Console for WoW
+
+szUI - WoW UI compilation. Skins many windows and pushes fixed settings to other
+       szUI-addons. Does not require any SavedVariables to be imported. 
+
+szDataBar - data bar mod
+
+szUnitFrames - unit frames module for szUI
