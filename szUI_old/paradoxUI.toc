@@ -1,0 +1,42 @@
+## Interface: 40000
+## Title : paradoxUI
+## Version: 0.1
+## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
+## Author: Nicholas Hakobian
+## Dependencies: oUF Recount Omen
+## OptionalDeps: Blizzard_TimeManager oUF_boring_totembar oUF_DebuffHighlight oUF_AuraWatch
+## SavedVariables: pUIDB
+
+reloadui.lua
+
+font.lua
+frames.lua
+
+actionbar\actionbar.lua
+actionbar\bar1.lua
+actionbar\otherbars.lua
+actionbar\totem.lua
+actionbar\shapeshift.lua
+actionbar\pet.lua
+actionbar\stance.lua
+
+chat.lua
+map.lua
+minimap.lua
+paradoxUI.lua
+test.lua
+tooltips.lua
+
+integ_omen.lua
+integ_recount.lua
+
+mods\multitooltips.lua
+
+unitframes\common.lua
+unitframes\party.lua
+unitframes\raid10-15-25.lua
+unitframes\raid40.lua
+
+snippets\chatbubbles.lua
+snippets\tooltips.lua
+snippets\watchframe.lua
