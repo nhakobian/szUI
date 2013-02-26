@@ -1,0 +1,15 @@
+## Interface: 40000
+## Title : szActionBars
+## Version: 0.1
+## Notes: UI by Xandyre/Jesellas of US-Ner'Zhul
+## Author: Nicholas Hakobian
+## Dependencies: szCommon
+
+settings.lua
+
+actionbar.lua
+bar1.lua
+otherbars.lua
+pet.lua
+stance.lua
+totem.lua
