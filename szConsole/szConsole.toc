@@ -1,0 +1,8 @@
+## Interface: 40000
+## Title: szConsole
+## Notes: LUA Console for debuggers/devs/power users
+
+settings.lua
+
+console.lua
+test.lua
